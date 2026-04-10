@@ -379,3 +379,56 @@ acme-certificate .card {
     word-break: break-word;
   }
 }
+
+/* Tablas Responsivas - Junior trick */
+@media (max-width: 768px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+    width: 100% !important;
+  }
+
+  /* Escondemos el encabezado real */
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  tr {
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  }
+
+  td {
+    border: none !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+    position: relative;
+    padding-left: 50% !important;
+    text-align: right !important;
+    min-height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  td:last-child {
+    border-bottom: none !important;
+  }
+
+  /* El truco: mostramos el nombre de la columna desde data-label */
+  td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 1rem;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    text-align: left;
+    font-weight: bold;
+    color: var(--primary-color);
+  }
+}

@@ -1,4 +1,4 @@
-﻿class AcmeSummary extends HTMLElement {
+class AcmeSummary extends HTMLElement {
     constructor() {
         super();
     }
@@ -23,11 +23,11 @@
                 const sign = isDeposit ? '+' : '-';
                 tbody += `
                     <tr style="transition:background 0.2s;">
-                        <td style="padding:1rem; border-bottom:1px solid var(--border-color);">${new Date(tx.date).toLocaleString('es-CO')}</td>
-                        <td style="padding:1rem; border-bottom:1px solid var(--border-color); font-family:monospace; color:#555;">${tx.reference}</td>
-                        <td style="padding:1rem; border-bottom:1px solid var(--border-color);">${tx.type}</td>
-                        <td style="padding:1rem; border-bottom:1px solid var(--border-color);">${tx.concept}</td>
-                        <td style="padding:1rem; border-bottom:1px solid var(--border-color); color:${color}; font-weight:bold; text-align:right;">${sign} $ ${Number(tx.amount).toLocaleString('es-CO')}</td>
+                        <td data-label="Fecha" style="padding:1rem; border-bottom:1px solid var(--border-color);">${new Date(tx.date).toLocaleString('es-CO')}</td>
+                        <td data-label="Referencia" style="padding:1rem; border-bottom:1px solid var(--border-color); font-family:monospace; color:#555;">${tx.reference}</td>
+                        <td data-label="Tipo" style="padding:1rem; border-bottom:1px solid var(--border-color);">${tx.type}</td>
+                        <td data-label="Concepto" style="padding:1rem; border-bottom:1px solid var(--border-color);">${tx.concept}</td>
+                        <td data-label="Valor" style="padding:1rem; border-bottom:1px solid var(--border-color); color:${color}; font-weight:bold; text-align:right;">${sign} $ ${Number(tx.amount).toLocaleString('es-CO')}</td>
                     </tr>
                 `;
             });

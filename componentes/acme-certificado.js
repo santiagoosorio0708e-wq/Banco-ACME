@@ -1,4 +1,4 @@
-﻿class AcmeCertificate extends HTMLElement {
+class AcmeCertificate extends HTMLElement {
     constructor() {
         super();
     }
@@ -63,9 +63,9 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td style="padding: 0.75rem; border: 1px solid var(--border-color);">Cuenta de ahorros</td>
-                                    <td style="padding: 0.75rem; border: 1px solid var(--border-color);">${this.account.accountNumber}</td>
-                                    <td style="padding: 0.75rem; border: 1px solid var(--border-color); text-align: right;">$ ${this.account.balance.toLocaleString('es-CO')}</td>
+                                    <td data-label="Tipo" style="padding: 0.75rem; border: 1px solid var(--border-color);">Cuenta de ahorros</td>
+                                    <td data-label="Nímero" style="padding: 0.75rem; border: 1px solid var(--border-color);">${this.account.accountNumber}</td>
+                                    <td data-label="Saldo" style="padding: 0.75rem; border: 1px solid var(--border-color); text-align: right;">$ ${this.account.balance.toLocaleString('es-CO')}</td>
                                 </tr>
                             </tbody>
                         </table>
