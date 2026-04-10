@@ -1,4 +1,4 @@
-﻿class AcmeLogin extends HTMLElement {
+class AcmeLogin extends HTMLElement {
     constructor() {
         super();
     }
@@ -11,7 +11,7 @@
     render() {
         this.innerHTML = `
             <div class="container text-center mt-4">
-                <h2 style="margin-top: 5vh; font-size: 2.5rem;">Banco Acme</h2>
+                <img src="assets/logo.png" alt="Banco Acme Logo" class="acme-logo-login">
                 <div class="card" style="max-width: 400px; margin: 2rem auto; text-align: left;">
                     <h3>Iniciar Sesión</h3>
                     <div id="login-error" class="alert alert-danger hidden"></div>

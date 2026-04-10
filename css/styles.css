@@ -26,7 +26,8 @@
 
 body {
   font-family: var(--font-family);
-  background-color: var(--secondary-color);
+  background: radial-gradient(circle at 10% 20%, rgb(30, 144, 255) 0%, rgb(5, 74, 150) 90%);
+  min-height: 100vh;
   color: var(--text-dark);
   line-height: 1.6;
 }
@@ -87,10 +88,15 @@ input:focus, select:focus {
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
   border-radius: var(--border-radius);
-  transition: all 0.3s;
+  transition: all 0.3s ease-in-out;
   cursor: pointer;
   border: none;
   width: 100%;
+}
+
+.btn:hover {
+  transform: scale(1.03); /* Efecto junior cool */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .btn-primary {
@@ -153,11 +159,45 @@ input:focus, select:focus {
 
 /* Card */
 .card {
-  background-color: var(--white);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-md);
-  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  border-top: 4px solid var(--primary-color);
+  box-shadow: 0 8px 24px rgba(11, 61, 145, 0.1);
+  padding: 2.5rem 2rem;
   margin-bottom: 1.5rem;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+/* Logos */
+.acme-logo-login {
+  max-width: 100%;
+  width: 280px;
+  height: auto;
+  margin-bottom: 20px;
+  margin-top: 5vh;
+  transition: transform 0.3s ease;
+}
+.acme-logo-login:hover {
+  transform: scale(1.05); /* Animación simple al logo */
+}
+
+.acme-logo-dash {
+  max-width: 100%;
+  width: 200px;
+  background-color: white; /* Para que el logo resalte bien sobre el fondo azul del sidebar */
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
+  margin-bottom: 5px;
+}
+.acme-logo-dash:hover {
+  transform: scale(1.05);
 }
 
 /* Layout Utilities */

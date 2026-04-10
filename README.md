@@ -2,7 +2,7 @@
 
 Este proyecto es una aplicación web responsiva, segura y funcional que simula un portal bancario para el "Banco Acme". Está construido íntegramente con tecnologías web estándar (Vanilla JavaScript, HTML5 y CSS3), sin el uso de frameworks pesados, con un enfoque en la modularidad a través de Web Components.
 
-## 🚀 Características Principales
+## Características Principales
 
 *   **Single Page Application (SPA):** Navegación fluida y dinámica sin recargar la página.
 *   **Autenticación de Usuarios:** Sistema completo de registro, inicio de sesión y recuperación de contraseñas.
@@ -12,7 +12,7 @@ Este proyecto es una aplicación web responsiva, segura y funcional que simula u
 *   **Persistencia de Datos Local:** Utiliza la API de `localStorage` del navegador para simular una base de datos real (guardando usuarios, cuentas y transacciones).
 *   **Diseño Web Moderno:** Interfaz de usuario profesional basada en CSS puro con tipografía "Inter", diseño adaptable (responsive) para dispositivos móviles y animaciones fluidas.
 
-## 📂 Estructura del Proyecto
+##  Estructura del Proyecto
 
 El código está organizado de manera modular y escalable:
 
@@ -40,7 +40,7 @@ proyecto portal transaccional/
     └── acme-certificado.js  # Componente para visualizar y generar un certificado bancario en formato imprimible.
 ```
 
-## 🛠️ ¿Cómo funciona a nivel de código?
+## ¿Cómo funciona a nivel de código?
 
 El desarrollo de este portal se basa en tres pilares arquitectónicos:
 
@@ -58,7 +58,7 @@ La clase `Database` se instancia de manera global (`window.db = new Database();`
 El archivo `index.html` contiene un contenedor vacío: `<div id="app-container"></div>`.
 El script `principal.js` escucha eventos personalizados (Custom Events) emitidos por los componentes. Dependiendo de si un usuario ha iniciado sesión (validado por `autenticacion.js`) y de la "ruta" seleccionada, `principal.js` vacía el `app-container` e inyecta dinámicamente el componente Web correspondiente para renderizar la pantalla correcta.
 
-## 💻 ¿Cómo ejecutar el proyecto?
+##  ¿Cómo ejecutar el proyecto?
 
 Dado que está construido con tecnologías puramente del lado del cliente y no se utilizan módulos estandarizados restrictivos (ES modules con `type="module"`), ejecutar la aplicación es sumamente sencillo:
 

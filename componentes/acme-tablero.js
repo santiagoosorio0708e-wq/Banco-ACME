@@ -1,4 +1,4 @@
-﻿class AcmeDashboard extends HTMLElement {
+class AcmeDashboard extends HTMLElement {
     connectedCallback() {
         this.user = window.auth.getCurrentUser();
         if(!this.user) {
@@ -15,8 +15,7 @@
             <div style="display:flex; min-height:100vh; font-family:var(--font-family);">
                 <nav style="width:260px; background:var(--primary-color); color:var(--white); padding:2rem 1.5rem; display:flex; flex-direction:column; box-shadow: 2px 0 5px rgba(0,0,0,0.1); z-index:10;">
                     <div style="margin-bottom:2.5rem; text-align:center;">
-                        <h3 style="color:var(--white);margin:0;font-size:1.5rem;font-weight:700;">Banco Acme</h3>
-                        <p style="font-size:0.85rem;opacity:0.8;">Portal Transaccional</p>
+                        <img src="assets/logo.png" alt="Banco Acme Logo" class="acme-logo-dash">
                     </div>
                     <ul style="list-style:none; padding:0; flex-grow:1;">
                         <li class="menu-item mt-1"><a data-view="tx-summary" class="active" style="display:block;color:var(--white);padding:0.85rem 1rem;border-radius:6px;cursor:pointer;">Resumen de transacciones</a></li>
@@ -30,7 +29,7 @@
                     </div>
                 </nav>
 
-                <main style="flex-grow:1; background:var(--secondary-color); padding:2.5rem; overflow-y:auto; height:100vh;">
+                <main style="flex-grow:1; background:rgba(255,255,255,0.95); padding:2.5rem; overflow-y:auto; height:100vh; border-top-left-radius: 15px; border-bottom-left-radius: 15px;">
                     <div style="margin-bottom: 2.5rem; display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;">
                         <div>
                             <h2 style="font-size:1.8rem;color:#333;">Hola, ${this.user.firstName} ${this.user.lastName}</h2>
