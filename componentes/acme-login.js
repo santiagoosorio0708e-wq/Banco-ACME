@@ -11,7 +11,7 @@ class AcmeLogin extends HTMLElement {
     render() {
         this.innerHTML = `
             <div class="container text-center mt-4">
-                <img src="assets/logo.png" alt="Banco Acme Logo" class="acme-logo-login">
+                <img src="imagenes/logo.png" alt="Banco Acme Logo" class="acme-logo-login">
                 <div class="card" style="max-width: 400px; margin: 2rem auto; text-align: left;">
                     <h3>Iniciar Sesión</h3>
                     <div id="login-error" class="alert alert-danger hidden"></div>

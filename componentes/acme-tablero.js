@@ -15,7 +15,7 @@ class AcmeDashboard extends HTMLElement {
             <div style="display:flex; min-height:100vh; font-family:var(--font-family);">
                 <nav style="width:260px; background:var(--primary-color); color:var(--white); padding:2rem 1.5rem; display:flex; flex-direction:column; box-shadow: 2px 0 5px rgba(0,0,0,0.1); z-index:10;">
                     <div style="margin-bottom:2.5rem; text-align:center;">
-                        <img src="assets/logo.png" alt="Banco Acme Logo" class="acme-logo-dash">
+                        <img src="imagenes/logo.png" alt="Banco Acme Logo" class="acme-logo-dash">
                     </div>
                     <ul style="list-style:none; padding:0; flex-grow:1;">
                         <li class="menu-item mt-1"><a data-view="tx-summary" class="active" style="display:block;color:var(--white);padding:0.85rem 1rem;border-radius:6px;cursor:pointer;">Resumen de transacciones</a></li>
