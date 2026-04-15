@@ -1,8 +1,4 @@
 class AcmeLogin extends HTMLElement {
-    constructor() {
-        super();
-    }
-
     connectedCallback() {
         this.render();
         this.addEventListeners();
@@ -11,31 +7,31 @@ class AcmeLogin extends HTMLElement {
     render() {
         this.innerHTML = `
             <div class="container text-center mt-4">
-                <img src="imagenes/logo.png" alt="Banco Acme Logo" class="acme-logo-login">
+                <img src="imagenes/logo.png" alt="Logo Banco Acme" class="acme-logo-login">
                 <div class="card" style="max-width: 400px; margin: 2rem auto; text-align: left;">
-                    <h3>Iniciar Sesión</h3>
-                    <div id="login-error" class="alert alert-danger hidden"></div>
-                    <form id="login-form">
+                    <h3>Iniciar sesión</h3>
+                    <div id="error-inicio-sesion" class="alert alert-danger hidden"></div>
+                    <form id="formulario-inicio-sesion">
                         <div class="form-group">
-                            <label for="idType">Tipo de Identificación</label>
-                            <select id="idType" required>
-                                <option value="CC">Cédula de Ciudadanía</option>
-                                <option value="CE">Cédula de Extranjería</option>
+                            <label for="tipo-identificacion">Tipo de identificación</label>
+                            <select id="tipo-identificacion" required>
+                                <option value="CC">Cédula de ciudadanía</option>
+                                <option value="CE">Cédula de extranjería</option>
                                 <option value="PA">Pasaporte</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="idNumber">Número de Identificación</label>
-                            <input type="text" id="idNumber" required inputmode="numeric" maxlength="11" pattern="[0-9]{2,11}" title="Debe contener entre 2 y 11 números">
+                            <label for="numero-identificacion">Número de identificación</label>
+                            <input type="text" id="numero-identificacion" required inputmode="numeric" maxlength="11" pattern="[0-9]{2,11}" title="Debe contener entre 2 y 11 números">
                         </div>
                         <div class="form-group">
-                            <label for="password">Contraseña</label>
-                            <input type="password" id="password" required>
+                            <label for="contrasena">Contraseña</label>
+                            <input type="password" id="contrasena" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Ingresar</button>
                     </form>
                     <div class="mt-3 text-center" style="font-size: 0.9rem;">
-                        <a href="#register">Crear cuenta</a> | 
+                        <a href="#register">Crear cuenta</a> |
                         <a href="#recovery">Recordar contraseña</a>
                     </div>
                 </div>
@@ -44,36 +40,40 @@ class AcmeLogin extends HTMLElement {
     }
 
     addEventListeners() {
-        const form = this.querySelector('#login-form');
-        const errorDiv = this.querySelector('#login-error');
-        const idNumberInput = this.querySelector('#idNumber');
+        const formulario = this.querySelector('#formulario-inicio-sesion');
+        const contenedorError = this.querySelector('#error-inicio-sesion');
+        const campoNumeroIdentificacion = this.querySelector('#numero-identificacion');
 
-        idNumberInput.addEventListener('input', () => {
-            idNumberInput.value = idNumberInput.value.replace(/\D/g, '').slice(0, 11);
+        campoNumeroIdentificacion.addEventListener('input', () => {
+            campoNumeroIdentificacion.value = campoNumeroIdentificacion.value.replace(/\D/g, '').slice(0, 11);
         });
 
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            errorDiv.classList.add('hidden');
-            const idType = this.querySelector('#idType').value;
-            const idNumber = idNumberInput.value.replace(/\D/g, '').slice(0, 11);
-            const password = this.querySelector('#password').value;
-            idNumberInput.value = idNumber;
+        formulario.addEventListener('submit', (evento) => {
+            evento.preventDefault();
+            contenedorError.classList.add('hidden');
 
-            if (!/^\d{2,11}$/.test(idNumber)) {
-                errorDiv.textContent = 'El número de identificación debe tener entre 2 y 11 dígitos.';
-                errorDiv.classList.remove('hidden');
+            const tipoId = this.querySelector('#tipo-identificacion').value;
+            const numeroId = campoNumeroIdentificacion.value.replace(/\D/g, '').slice(0, 11);
+            const contrasena = this.querySelector('#contrasena').value;
+
+            campoNumeroIdentificacion.value = numeroId;
+
+            if (!/^\d{2,11}$/.test(numeroId)) {
+                contenedorError.textContent = 'El número de identificación debe tener entre 2 y 11 dígitos.';
+                contenedorError.classList.remove('hidden');
                 return;
             }
 
-            const res = window.auth.login(idType, idNumber, password);
-            if (!res.success) {
-                errorDiv.textContent = res.message;
-                errorDiv.classList.remove('hidden');
-            } else {
-                errorDiv.classList.add('hidden');
+            const respuesta = window.auth.iniciarSesion(tipoId, numeroId, contrasena);
+            if (!respuesta.exito) {
+                contenedorError.textContent = respuesta.mensaje;
+                contenedorError.classList.remove('hidden');
+                return;
             }
+
+            contenedorError.classList.add('hidden');
         });
     }
 }
+
 customElements.define('acme-login', AcmeLogin);

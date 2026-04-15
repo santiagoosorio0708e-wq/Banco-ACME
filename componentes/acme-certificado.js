@@ -1,17 +1,13 @@
-class AcmeCertificate extends HTMLElement {
-    constructor() {
-        super();
-    }
-
+class AcmeCertificado extends HTMLElement {
     connectedCallback() {
-        this.user = window.auth.getCurrentUser();
-        this.account = window.db.getAccountByUserId(this.user.idNumber);
+        this.usuario = window.auth.obtenerUsuarioActual();
+        this.cuenta = window.db.obtenerCuentaPorUsuario(this.usuario.numeroId);
         this.render();
         this.addEventListeners();
     }
 
     render() {
-        const currentDate = new Date().toLocaleDateString('es-CO', {
+        const fechaActual = new Date().toLocaleDateString('es-CO', {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
@@ -29,11 +25,11 @@ class AcmeCertificate extends HTMLElement {
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 1rem; gap: 1rem; flex-wrap: wrap;">
                         <div>
                             <h2 style="margin: 0; color: var(--primary-color);">Banco Acme</h2>
-                            <p style="margin: 0; color: var(--text-light);">Portal Transaccional</p>
+                            <p style="margin: 0; color: var(--text-light);">Portal transaccional</p>
                         </div>
                         <div style="text-align: right;">
                             <p style="margin: 0;"><strong>Fecha de expedición:</strong></p>
-                            <p style="margin: 0;">${currentDate}</p>
+                            <p style="margin: 0;">${fechaActual}</p>
                         </div>
                     </div>
 
@@ -45,8 +41,8 @@ class AcmeCertificate extends HTMLElement {
                         <p>El <strong>Banco Acme</strong> certifica que:</p>
                         <br>
                         <p>
-                            El/La señor(a) <strong>${this.user.firstName} ${this.user.lastName}</strong>,
-                            identificado(a) con <strong>${this.user.idType}</strong> número <strong>${this.user.idNumber}</strong>,
+                            El/La señor(a) <strong>${this.usuario.nombres} ${this.usuario.apellidos}</strong>,
+                            identificado(a) con <strong>${this.usuario.tipoId}</strong> número <strong>${this.usuario.numeroId}</strong>,
                             es cliente activo de nuestra entidad.
                         </p>
                         <br>
@@ -64,8 +60,8 @@ class AcmeCertificate extends HTMLElement {
                             <tbody>
                                 <tr>
                                     <td data-label="Tipo" style="padding: 0.75rem; border: 1px solid var(--border-color);">Cuenta de ahorros</td>
-                                    <td data-label="Nímero" style="padding: 0.75rem; border: 1px solid var(--border-color);">${this.account.accountNumber}</td>
-                                    <td data-label="Saldo" style="padding: 0.75rem; border: 1px solid var(--border-color); text-align: right;">$ ${this.account.balance.toLocaleString('es-CO')}</td>
+                                    <td data-label="Número" style="padding: 0.75rem; border: 1px solid var(--border-color);">${this.cuenta.numeroCuenta}</td>
+                                    <td data-label="Saldo" style="padding: 0.75rem; border: 1px solid var(--border-color); text-align: right;">$ ${this.cuenta.saldo.toLocaleString('es-CO')}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -86,7 +82,7 @@ class AcmeCertificate extends HTMLElement {
                 @media print {
                     body * { visibility: hidden; }
                     #print-area, #print-area * { visibility: visible; }
-                    #print-area { position: absolute; left: 0; top: 0; width: 100%; margin:0; padding:2rem; box-shadow:none; border: none !important; }
+                    #print-area { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 2rem; box-shadow: none; border: none !important; }
                     .print-btn { display: none !important; }
                 }
             </style>
@@ -94,10 +90,11 @@ class AcmeCertificate extends HTMLElement {
     }
 
     addEventListeners() {
-        const printBtn = this.querySelector('.print-btn');
-        printBtn.addEventListener('click', () => {
+        const botonImprimir = this.querySelector('.print-btn');
+        botonImprimir.addEventListener('click', () => {
             window.print();
         });
     }
 }
-customElements.define('acme-certificate', AcmeCertificate);
+
+customElements.define('acme-certificate', AcmeCertificado);

@@ -1,54 +1,50 @@
-﻿class AcmeTransaction extends HTMLElement {
-    constructor() {
-        super();
-    }
-
+class AcmeTransaccion extends HTMLElement {
     connectedCallback() {
-        this.user = window.auth.getCurrentUser();
-        this.account = window.db.getAccountByUserId(this.user.idNumber);
-        this.type = this.getAttribute('type') || 'deposit';
-        this.lastTransaction = null;
+        this.usuario = window.auth.obtenerUsuarioActual();
+        this.cuenta = window.db.obtenerCuentaPorUsuario(this.usuario.numeroId);
+        this.tipo = this.getAttribute('type') || 'deposit';
+        this.ultimaTransaccion = null;
         this.render();
         this.addEventListeners();
     }
 
-    getConfig() {
-        if (this.type === 'deposit') {
+    obtenerConfiguracion() {
+        if (this.tipo === 'deposit') {
             return {
-                title: 'Consignación electrónica',
-                typeLabel: 'Consignación',
-                concept: 'Consignación por canal electrónico',
-                submitText: 'Realizar consignación',
-                isDeposit: true
+                titulo: 'Consignación electrónica',
+                etiquetaTipo: 'Consignación',
+                concepto: 'Consignación por canal electrónico',
+                textoBoton: 'Realizar consignación',
+                esConsignacion: true
             };
         }
 
-        if (this.type === 'withdraw') {
+        if (this.tipo === 'withdraw') {
             return {
-                title: 'Retiro de dinero',
-                typeLabel: 'Retiro',
-                concept: 'Retiro de dinero',
-                submitText: 'Realizar retiro',
-                isDeposit: false
+                titulo: 'Retiro de dinero',
+                etiquetaTipo: 'Retiro',
+                concepto: 'Retiro de dinero',
+                textoBoton: 'Realizar retiro',
+                esConsignacion: false
             };
         }
 
         return {
-            title: 'Pago de servicios públicos',
-            typeLabel: 'Retiro',
-            concept: null,
-            submitText: 'Pagar servicio',
-            isDeposit: false
+            titulo: 'Pago de servicios públicos',
+            etiquetaTipo: 'Retiro',
+            concepto: null,
+            textoBoton: 'Pagar servicio',
+            esConsignacion: false
         };
     }
 
     render() {
-        const config = this.getConfig();
-        const paymentFields = this.type === 'payment'
+        const configuracion = this.obtenerConfiguracion();
+        const camposPago = this.tipo === 'payment'
             ? `
                 <div class="form-group">
                     <label>Servicio público</label>
-                    <select id="tx-service" required>
+                    <select id="tx-servicio" required>
                         <option value="Energía">Energía</option>
                         <option value="Agua">Agua</option>
                         <option value="Gas natural">Gas natural</option>
@@ -57,28 +53,28 @@
                 </div>
                 <div class="form-group">
                     <label>Referencia del servicio</label>
-                    <input type="text" id="tx-service-reference" inputmode="numeric" maxlength="11" pattern="[0-9]{11}" title="Debe contener exactamente 11 números" required>
+                    <input type="text" id="tx-referencia-servicio" inputmode="numeric" maxlength="11" pattern="[0-9]{11}" title="Debe contener exactamente 11 números" required>
                 </div>
             `
             : '';
 
-        const receipt = this.lastTransaction
+        const recibo = this.ultimaTransaccion
             ? `
-                <div class="card" id="tx-print-area" style="border:1px solid var(--border-color); background:#fcfcfd;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap; margin-bottom:1.5rem;">
+                <div class="card" id="tx-print-area" style="border: 1px solid var(--border-color); background: #fcfcfd;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
                         <div>
-                            <h4 style="margin:0;">Resumen de la transacción</h4>
-                            <p style="margin:0.35rem 0 0; color:var(--text-light);">Operación registrada exitosamente.</p>
+                            <h4 style="margin: 0;">Resumen de la transacción</h4>
+                            <p style="margin: 0.35rem 0 0; color: var(--text-light);">Operación registrada exitosamente.</p>
                         </div>
-                        <button type="button" class="btn btn-outline tx-print-btn" style="width:auto; padding:0.5rem 1rem;">Imprimir resumen</button>
+                        <button type="button" class="btn btn-outline tx-print-btn" style="width: auto; padding: 0.5rem 1rem;">Imprimir resumen</button>
                     </div>
-                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:1rem;">
-                        <div><strong>Fecha:</strong><br>${new Date(this.lastTransaction.date).toLocaleString('es-CO')}</div>
-                        <div><strong>Referencia:</strong><br>${this.lastTransaction.reference}</div>
-                        <div><strong>Tipo:</strong><br>${this.lastTransaction.type}</div>
-                        <div><strong>Concepto:</strong><br>${this.lastTransaction.concept}</div>
-                        <div><strong>Valor:</strong><br>$ ${Number(this.lastTransaction.amount).toLocaleString('es-CO')}</div>
-                        ${this.lastTransaction.serviceReference ? `<div><strong>Referencia del servicio:</strong><br>${this.lastTransaction.serviceReference}</div>` : ''}
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+                        <div><strong>Fecha:</strong><br>${new Date(this.ultimaTransaccion.fecha).toLocaleString('es-CO')}</div>
+                        <div><strong>Referencia:</strong><br>${this.ultimaTransaccion.referencia}</div>
+                        <div><strong>Tipo:</strong><br>${this.ultimaTransaccion.tipo}</div>
+                        <div><strong>Concepto:</strong><br>${this.ultimaTransaccion.concepto}</div>
+                        <div><strong>Valor:</strong><br>$ ${Number(this.ultimaTransaccion.monto).toLocaleString('es-CO')}</div>
+                        ${this.ultimaTransaccion.referenciaServicio ? `<div><strong>Referencia del servicio:</strong><br>${this.ultimaTransaccion.referenciaServicio}</div>` : ''}
                     </div>
                 </div>
             `
@@ -86,37 +82,37 @@
 
         this.innerHTML = `
             <div class="card" style="max-width: 720px; margin: 0 auto;">
-                <h3 style="margin-bottom: 1.5rem; text-align: center;">${config.title}</h3>
+                <h3 style="margin-bottom: 1.5rem; text-align: center;">${configuracion.titulo}</h3>
 
-                <div id="tx-alert" class="alert hidden"></div>
+                <div id="alerta-transaccion" class="alert hidden"></div>
 
                 <div style="background: var(--secondary-color); padding: 1rem; border-radius: var(--border-radius); margin-bottom: 1.5rem;">
                     <div class="grid-2-col">
                         <div>
-                            <p style="margin-bottom:0.35rem; color:var(--text-light);">Número de cuenta</p>
-                            <strong>${this.account.accountNumber}</strong>
+                            <p style="margin-bottom: 0.35rem; color: var(--text-light);">Número de cuenta</p>
+                            <strong>${this.cuenta.numeroCuenta}</strong>
                         </div>
                         <div>
-                            <p style="margin-bottom:0.35rem; color:var(--text-light);">Titular</p>
-                            <strong>${this.user.firstName} ${this.user.lastName}</strong>
+                            <p style="margin-bottom: 0.35rem; color: var(--text-light);">Titular</p>
+                            <strong>${this.usuario.nombres} ${this.usuario.apellidos}</strong>
                         </div>
                     </div>
                     <div class="mt-2">
-                        <p style="margin-bottom:0.35rem; color:var(--text-light);">Saldo actual</p>
-                        <strong style="font-size:1.35rem; color:var(--primary-color);">$ ${Number(this.account.balance).toLocaleString('es-CO')}</strong>
+                        <p style="margin-bottom: 0.35rem; color: var(--text-light);">Saldo actual</p>
+                        <strong style="font-size: 1.35rem; color: var(--primary-color);">$ ${Number(this.cuenta.saldo).toLocaleString('es-CO')}</strong>
                     </div>
                 </div>
 
-                <form id="tx-form">
-                    ${paymentFields}
+                <form id="formulario-transaccion">
+                    ${camposPago}
                     <div class="form-group">
-                        <label>Valor a ${this.type === 'deposit' ? 'consignar' : this.type === 'withdraw' ? 'retirar' : 'pagar'}</label>
-                        <input type="number" id="tx-amount" min="1" step="0.01" required>
+                        <label>Valor a ${this.tipo === 'deposit' ? 'consignar' : this.tipo === 'withdraw' ? 'retirar' : 'pagar'}</label>
+                        <input type="number" id="monto-transaccion" min="1" step="0.01" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">${config.submitText}</button>
+                    <button type="submit" class="btn btn-primary">${configuracion.textoBoton}</button>
                 </form>
             </div>
-            ${receipt}
+            ${recibo}
             <style>
                 @media print {
                     body * { visibility: hidden; }
@@ -127,72 +123,75 @@
             </style>
         `;
 
-        const printBtn = this.querySelector('.tx-print-btn');
-        if (printBtn) {
-            printBtn.addEventListener('click', () => window.print());
+        const botonImprimir = this.querySelector('.tx-print-btn');
+        if (botonImprimir) {
+            botonImprimir.addEventListener('click', () => window.print());
         }
     }
 
     addEventListeners() {
-        const form = this.querySelector('#tx-form');
-        const alertBox = this.querySelector('#tx-alert');
-        const serviceReferenceInput = this.querySelector('#tx-service-reference');
+        const formulario = this.querySelector('#formulario-transaccion');
+        const cuadroAlerta = this.querySelector('#alerta-transaccion');
+        const campoReferenciaServicio = this.querySelector('#tx-referencia-servicio');
 
-        if (serviceReferenceInput) {
-            serviceReferenceInput.addEventListener('input', () => {
-                serviceReferenceInput.value = serviceReferenceInput.value.replace(/\D/g, '').slice(0, 11);
+        if (campoReferenciaServicio) {
+            campoReferenciaServicio.addEventListener('input', () => {
+                campoReferenciaServicio.value = campoReferenciaServicio.value.replace(/\D/g, '').slice(0, 11);
             });
         }
 
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const config = this.getConfig();
-            const amount = parseFloat(this.querySelector('#tx-amount').value);
+        formulario.addEventListener('submit', (evento) => {
+            evento.preventDefault();
 
-            if (isNaN(amount) || amount <= 0) {
-                this.showAlert(alertBox, 'Por favor ingrese un valor válido.', 'danger');
+            const configuracion = this.obtenerConfiguracion();
+            const monto = parseFloat(this.querySelector('#monto-transaccion').value);
+
+            if (isNaN(monto) || monto <= 0) {
+                this.mostrarAlerta(cuadroAlerta, 'Por favor ingrese un valor válido.', 'danger');
                 return;
             }
 
-            let concept = config.concept;
-            let serviceReference = null;
+            let concepto = configuracion.concepto;
+            let referenciaServicio = null;
 
-            if (this.type === 'payment') {
-                const service = this.querySelector('#tx-service').value;
-                serviceReference = this.querySelector('#tx-service-reference').value.replace(/\D/g, '').slice(0, 11).trim();
-                this.querySelector('#tx-service-reference').value = serviceReference;
-                if (!/^\d{11}$/.test(serviceReference)) {
-                    this.showAlert(alertBox, 'La referencia del servicio debe tener exactamente 11 dígitos.', 'danger');
+            if (this.tipo === 'payment') {
+                const servicio = this.querySelector('#tx-servicio').value;
+                referenciaServicio = this.querySelector('#tx-referencia-servicio').value.replace(/\D/g, '').slice(0, 11).trim();
+                this.querySelector('#tx-referencia-servicio').value = referenciaServicio;
+
+                if (!/^\d{11}$/.test(referenciaServicio)) {
+                    this.mostrarAlerta(cuadroAlerta, 'La referencia del servicio debe tener exactamente 11 dígitos.', 'danger');
                     return;
                 }
-                concept = `Pago de servicio público ${service}`;
+
+                concepto = `Pago de servicio público ${servicio}`;
             }
 
             try {
-                this.account.balance = window.db.updateBalance(this.account.accountNumber, amount, config.isDeposit);
+                this.cuenta.saldo = window.db.actualizarSaldo(this.cuenta.numeroCuenta, monto, configuracion.esConsignacion);
 
-                this.lastTransaction = window.db.createTransaction({
-                    accountNumber: this.account.accountNumber,
-                    type: config.typeLabel,
-                    amount,
-                    concept,
-                    serviceReference
+                this.ultimaTransaccion = window.db.crearTransaccion({
+                    numeroCuenta: this.cuenta.numeroCuenta,
+                    tipo: configuracion.etiquetaTipo,
+                    monto,
+                    concepto,
+                    referenciaServicio
                 });
 
                 this.render();
                 this.addEventListeners();
-                this.showAlert(this.querySelector('#tx-alert'), 'Transacción realizada con éxito.', 'success');
+                this.mostrarAlerta(this.querySelector('#alerta-transaccion'), 'Transacción realizada con éxito.', 'success');
             } catch (error) {
-                this.showAlert(alertBox, error.message, 'danger');
+                this.mostrarAlerta(cuadroAlerta, error.message, 'danger');
             }
         });
     }
 
-    showAlert(element, message, type) {
-        element.textContent = message;
-        element.className = `alert alert-${type}`;
-        element.classList.remove('hidden');
+    mostrarAlerta(elemento, mensaje, tipo) {
+        elemento.textContent = mensaje;
+        elemento.className = `alert alert-${tipo}`;
+        elemento.classList.remove('hidden');
     }
 }
 
-customElements.define('acme-transaction', AcmeTransaction);
+customElements.define('acme-transaction', AcmeTransaccion);

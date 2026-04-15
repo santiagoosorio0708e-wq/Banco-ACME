@@ -1,9 +1,9 @@
-﻿class Database {
+class BaseDatos {
     constructor() {
-        this.init();
+        this.inicializar();
     }
 
-    init() {
+    inicializar() {
         if (!localStorage.getItem('acmeUsers')) {
             localStorage.setItem('acmeUsers', JSON.stringify([]));
         }
@@ -15,113 +15,162 @@
         }
     }
 
-    getUsers() {
+    obtenerUsuarios() {
         return JSON.parse(localStorage.getItem('acmeUsers'));
     }
 
-    getUser(idType, idNumber) {
-        const users = this.getUsers();
-        return users.find(u => u.idType === idType && u.idNumber === idNumber);
+    obtenerUsuario(tipoId, numeroId) {
+        const usuarios = this.obtenerUsuarios();
+        return usuarios.find((usuario) => usuario.tipoId === tipoId && usuario.numeroId === numeroId);
     }
 
-    createUser(userObj) {
-        const users = this.getUsers();
-        const cleanedIdNumber = String(userObj.idNumber ?? '').trim();
+    crearUsuario(usuario) {
+        const usuarios = this.obtenerUsuarios();
+        const numeroIdLimpio = String(usuario.numeroId ?? '').trim();
 
-        if (!/^\d{2,11}$/.test(cleanedIdNumber)) {
-            throw new Error("El número de identificación debe tener entre 2 y 11 dígitos.");
-        }
-        
-        const exists = users.find(u => u.idType === userObj.idType && u.idNumber === cleanedIdNumber);
-        if (exists) {
-            throw new Error("El usuario ya se encuentra registrado con este documento.");
+        if (!/^\d{2,11}$/.test(numeroIdLimpio)) {
+            throw new Error('El número de identificación debe tener entre 2 y 11 dígitos.');
         }
 
-        userObj.idNumber = cleanedIdNumber;
-        users.push(userObj);
-        localStorage.setItem('acmeUsers', JSON.stringify(users));
+        const yaExiste = usuarios.find(
+            (usuarioActual) => usuarioActual.tipoId === usuario.tipoId && usuarioActual.numeroId === numeroIdLimpio
+        );
 
-        this.createAccount(cleanedIdNumber);
+        if (yaExiste) {
+            throw new Error('El usuario ya se encuentra registrado con este documento.');
+        }
+
+        usuario.numeroId = numeroIdLimpio;
+        usuarios.push(usuario);
+        localStorage.setItem('acmeUsers', JSON.stringify(usuarios));
+
+        this.crearCuenta(numeroIdLimpio);
         return true;
     }
 
-    updateUser(updatedUser) {
-        const users = this.getUsers();
-        const index = users.findIndex(u => u.idType === updatedUser.idType && u.idNumber === updatedUser.idNumber);
-        if(index !== -1) {
-            users[index] = updatedUser;
-            localStorage.setItem('acmeUsers', JSON.stringify(users));
+    actualizarUsuario(usuarioActualizado) {
+        const usuarios = this.obtenerUsuarios();
+        const indice = usuarios.findIndex(
+            (usuario) => usuario.tipoId === usuarioActualizado.tipoId && usuario.numeroId === usuarioActualizado.numeroId
+        );
+
+        if (indice !== -1) {
+            usuarios[indice] = usuarioActualizado;
+            localStorage.setItem('acmeUsers', JSON.stringify(usuarios));
             return true;
         }
+
         return false;
     }
 
-    getAccounts() {
+    obtenerCuentas() {
         return JSON.parse(localStorage.getItem('acmeAccounts'));
     }
 
-    getAccountByUserId(userIdNumber) {
-        const accounts = this.getAccounts();
-        return accounts.find(a => a.userId === userIdNumber);
-    }
-    
-    getAccountByAccountNumber(accountNumber) {
-        const accounts = this.getAccounts();
-        return accounts.find(a => a.accountNumber === accountNumber);
+    obtenerCuentaPorUsuario(numeroIdUsuario) {
+        const cuentas = this.obtenerCuentas();
+        return cuentas.find((cuenta) => cuenta.usuarioId === numeroIdUsuario);
     }
 
-    createAccount(userIdNumber) {
-        const accounts = this.getAccounts();
-        const accountNumber = Math.floor(1000000000 + Math.random() * 9000000000).toString();
-        
-        const newAccount = {
-            accountNumber,
-            userId: userIdNumber,
-            balance: 0.0,
-            createdAt: new Date().toISOString()
+    obtenerCuentaPorNumero(numeroCuenta) {
+        const cuentas = this.obtenerCuentas();
+        return cuentas.find((cuenta) => cuenta.numeroCuenta === numeroCuenta);
+    }
+
+    crearCuenta(numeroIdUsuario) {
+        const cuentas = this.obtenerCuentas();
+        const numeroCuenta = Math.floor(1000000000 + Math.random() * 9000000000).toString();
+
+        const nuevaCuenta = {
+            numeroCuenta,
+            usuarioId: numeroIdUsuario,
+            saldo: 0.0,
+            fechaCreacion: new Date().toISOString()
         };
 
-        accounts.push(newAccount);
-        localStorage.setItem('acmeAccounts', JSON.stringify(accounts));
-        return newAccount;
+        cuentas.push(nuevaCuenta);
+        localStorage.setItem('acmeAccounts', JSON.stringify(cuentas));
+        return nuevaCuenta;
     }
 
-    updateBalance(accountNumber, amount, isDeposit) {
-        const accounts = this.getAccounts();
-        const accIndex = accounts.findIndex(a => a.accountNumber === accountNumber);
-        
-        if (accIndex === -1) throw new Error("Cuenta no encontrada");
+    actualizarSaldo(numeroCuenta, monto, esConsignacion) {
+        const cuentas = this.obtenerCuentas();
+        const indiceCuenta = cuentas.findIndex((cuenta) => cuenta.numeroCuenta === numeroCuenta);
 
-        if (isDeposit) {
-            accounts[accIndex].balance += Number(amount);
-        } else {
-            if (accounts[accIndex].balance < amount) {
-                throw new Error("Fondos insuficientes");
-            }
-            accounts[accIndex].balance -= Number(amount);
+        if (indiceCuenta === -1) {
+            throw new Error('Cuenta no encontrada');
         }
 
-        localStorage.setItem('acmeAccounts', JSON.stringify(accounts));
-        return accounts[accIndex].balance;
+        if (esConsignacion) {
+            cuentas[indiceCuenta].saldo += Number(monto);
+        } else {
+            if (cuentas[indiceCuenta].saldo < monto) {
+                throw new Error('Fondos insuficientes');
+            }
+            cuentas[indiceCuenta].saldo -= Number(monto);
+        }
+
+        localStorage.setItem('acmeAccounts', JSON.stringify(cuentas));
+        return cuentas[indiceCuenta].saldo;
     }
 
-    getTransactionsByAccount(accountNumber) {
-        const txs = JSON.parse(localStorage.getItem('acmeTransactions'));
-        return txs.filter(t => t.accountNumber === accountNumber).sort((a,b) => new Date(b.date) - new Date(a.date));
+    obtenerTransaccionesPorCuenta(numeroCuenta) {
+        const transacciones = JSON.parse(localStorage.getItem('acmeTransactions'));
+        return transacciones
+            .filter((transaccion) => transaccion.numeroCuenta === numeroCuenta)
+            .sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
     }
 
-    createTransaction(txObj) {
-        const txs = JSON.parse(localStorage.getItem('acmeTransactions'));
-        const newTx = {
-            ...txObj,
-            reference: 'REF' + Math.floor(100000 + Math.random() * 900000).toString(),
-            date: new Date().toISOString()
+    crearTransaccion(transaccion) {
+        const transacciones = JSON.parse(localStorage.getItem('acmeTransactions'));
+        const nuevaTransaccion = {
+            ...transaccion,
+            referencia: `REF${Math.floor(100000 + Math.random() * 900000).toString()}`,
+            fecha: new Date().toISOString()
         };
 
-        txs.push(newTx);
-        localStorage.setItem('acmeTransactions', JSON.stringify(txs));
-        return newTx;
+        transacciones.push(nuevaTransaccion);
+        localStorage.setItem('acmeTransactions', JSON.stringify(transacciones));
+        return nuevaTransaccion;
+    }
+
+    migrarDatos() {
+        const usuarios = this.obtenerUsuarios().map((usuario) => ({
+            ...usuario,
+            tipoId: usuario.tipoId ?? usuario.idType,
+            numeroId: usuario.numeroId ?? usuario.idNumber,
+            nombres: usuario.nombres ?? usuario.firstName,
+            apellidos: usuario.apellidos ?? usuario.lastName,
+            genero: usuario.genero ?? usuario.gender,
+            telefono: usuario.telefono ?? usuario.phone,
+            correo: usuario.correo ?? usuario.email,
+            ciudad: usuario.ciudad ?? usuario.city,
+            direccion: usuario.direccion ?? usuario.address,
+            contrasena: usuario.contrasena ?? usuario.password
+        }));
+
+        const cuentas = this.obtenerCuentas().map((cuenta) => ({
+            ...cuenta,
+            numeroCuenta: cuenta.numeroCuenta ?? cuenta.accountNumber,
+            usuarioId: cuenta.usuarioId ?? cuenta.userId,
+            saldo: cuenta.saldo ?? cuenta.balance ?? 0,
+            fechaCreacion: cuenta.fechaCreacion ?? cuenta.createdAt
+        }));
+
+        const transacciones = JSON.parse(localStorage.getItem('acmeTransactions')).map((transaccion) => ({
+            ...transaccion,
+            numeroCuenta: transaccion.numeroCuenta ?? transaccion.accountNumber,
+            referencia: transaccion.referencia ?? transaccion.reference,
+            fecha: transaccion.fecha ?? transaccion.date,
+            concepto: transaccion.concepto ?? transaccion.concept,
+            referenciaServicio: transaccion.referenciaServicio ?? transaccion.serviceReference
+        }));
+
+        localStorage.setItem('acmeUsers', JSON.stringify(usuarios));
+        localStorage.setItem('acmeAccounts', JSON.stringify(cuentas));
+        localStorage.setItem('acmeTransactions', JSON.stringify(transacciones));
     }
 }
 
-window.db = new Database();
+window.db = new BaseDatos();
+window.db.migrarDatos();

@@ -1,36 +1,36 @@
-class App {
+class Aplicacion {
     constructor() {
-        this.container = document.getElementById('app-container');
-        this.init();
+        this.contenedor = document.getElementById('app-container');
+        this.inicializar();
     }
 
-    init() {
-        window.addEventListener('hashchange', () => this.render());
-        document.addEventListener('auth-changed', () => this.render());
-        this.render();
+    inicializar() {
+        window.addEventListener('hashchange', () => this.renderizar());
+        document.addEventListener('autenticacion-cambiada', () => this.renderizar());
+        this.renderizar();
     }
 
-    render() {
-        const user = window.auth.getCurrentUser();
-        const hash = window.location.hash || '';
+    renderizar() {
+        const usuario = window.auth.obtenerUsuarioActual();
+        const rutaHash = window.location.hash || '';
 
-        this.container.innerHTML = ''; // Limpiar vista
+        this.contenedor.innerHTML = '';
 
-        if (user) {
-            this.container.innerHTML = '<acme-dashboard></acme-dashboard>';
+        if (usuario) {
+            this.contenedor.innerHTML = '<acme-dashboard></acme-dashboard>';
+            return;
+        }
+
+        if (rutaHash === '#register') {
+            this.contenedor.innerHTML = '<acme-register></acme-register>';
+        } else if (rutaHash === '#recovery') {
+            this.contenedor.innerHTML = '<acme-recovery></acme-recovery>';
         } else {
-            // Rutas para páginas públicas
-            if (hash === '#register') {
-                this.container.innerHTML = '<acme-register></acme-register>';
-            } else if (hash === '#recovery') {
-                this.container.innerHTML = '<acme-recovery></acme-recovery>';
-            } else {
-                this.container.innerHTML = '<acme-login></acme-login>';
-            }
+            this.contenedor.innerHTML = '<acme-login></acme-login>';
         }
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    window.app = new App();
+    window.app = new Aplicacion();
 });
