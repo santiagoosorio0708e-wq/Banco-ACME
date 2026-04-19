@@ -5,11 +5,13 @@ Este proyecto es una aplicación web responsiva, segura y funcional que simula u
 ## Características Principales
 
 *   **Single Page Application (SPA):** Navegación fluida y dinámica sin recargar la página.
-*   **Autenticación de Usuarios:** Sistema completo de registro, inicio de sesión y recuperación de contraseñas.
-*   **Gestión de Cuentas:** Visualización de saldo actual y número de cuenta.
-*   **Transacciones Bancarias:** Permite realizar depósitos, retiros y pagos de servicios con validaciones de fondos en tiempo real.
-*   **Generación de Certificados:** Emisión de certificaciones bancarias descargables/imprimibles.
-*   **Persistencia de Datos Local:** Utiliza la API de `localStorage` del navegador para simular una base de datos real (guardando usuarios, cuentas y transacciones).
+*   **Autenticación de Usuarios y Roles:** Sistema completo de registro, inicio de sesión (con soporte para administrador y usuario estándar) y recuperación de contraseñas.
+*   **Gestión de Cuentas y Tarjetas:** Visualización de saldo actual, número de cuenta y administración integral de tarjetas de crédito/débito.
+*   **Transacciones y Transferencias:** Permite realizar depósitos, retiros, pagos de servicios, y transferencias monetarias a terceros con validaciones de fondos en tiempo real.
+*   **Herramientas Financieras:** Incluye un simulador financiero interactivo, gestión de presupuestos personales, bolsillos de ahorro y flujos de solicitud de préstamos.
+*   **Soporte y Notificaciones:** Sistema integrado de soporte al cliente, notificaciones de cuenta en tiempo real y panel de administración integral.
+*   **Generación de Certificados:** Emisión de certificaciones bancarias descargables/imprimibles y gestión intuitiva del perfil del usuario.
+*   **Persistencia de Datos Local:** Utiliza la API de `localStorage` del navegador para simular una base de datos de manera altamente eficiente (usuarios, cuentas, transacciones presupuestos, etc).
 *   **Diseño Web Moderno:** Interfaz de usuario profesional basada en CSS puro con tipografía "Inter", diseño adaptable (responsive) para dispositivos móviles y animaciones fluidas.
 
 ##  Estructura del Proyecto
@@ -31,13 +33,23 @@ proyecto portal transaccional/
 │   └── principal.js         # Orquestador principal de la app. Gestiona el enrutamiento y muestra el componente correcto en el DOM.
 │
 └── componentes/             # Directorio que contiene todos los Web Components personalizados.
+    ├── acme-admin.js        # Panel de administración para gestionar usuarios y el sistema.
+    ├── acme-bolsillos.js    # Componente para gestionar objetivos y bolsillos de ahorro.
+    ├── acme-certificado.js  # Componente para visualizar y generar certificados bancarios.
     ├── acme-login.js        # Componente para el formulario de inicio de sesión.
+    ├── acme-notificaciones.js # Sistema para visualizar y gestionar notificaciones al usuario.
+    ├── acme-perfil.js       # Componente para la gestión detallada del perfil del usuario.
+    ├── acme-prestamo.js     # Componente para simular y solicitar préstamos bancarios.
+    ├── acme-presupuesto.js  # Herramienta para la gestión y seguimiento del presupuesto personal.
+    ├── acme-recuperacion.js # Componente para la recuperación y cambio de contraseñas.
     ├── acme-registro.js     # Componente para la creación de nuevos usuarios y cuentas asociadas.
-    ├── acme-recuperacion.js # Componente para simular la recuperación de contraseñas.
-    ├── acme-tablero.js      # Componente contenedor post-login (Dashboard o menú lateral/superior).
-    ├── acme-resumen.js      # Componente que muestra el resumen de la cuenta (saldo, número, movimientos recientes).
-    ├── acme-transaccion.js  # Componente con formularios para depósitos, retiros y pagos.
-    └── acme-certificado.js  # Componente para visualizar y generar un certificado bancario en formato imprimible.
+    ├── acme-resumen.js      # Componente que muestra un resumen de la cuenta (saldo, movimientos recientes).
+    ├── acme-simulador.js    # Simulador intuitivo de inversiones y préstamos.
+    ├── acme-soporte.js      # Componente para radicar quejas, reclamos y obtener soporte al cliente.
+    ├── acme-tablero.js      # Componente contenedor post-login principal (Dashboard lateral/superior).
+    ├── acme-tarjeta.js      # Gestión de tarjetas de crédito y débito del usuario.
+    ├── acme-transaccion.js  # Componente con formularios de caja para depósitos, retiros y pagos.
+    └── acme-transferencia.js # Componente para efectuar transferencias de dinero a terceros.
 ```
 
 ## ¿Cómo funciona a nivel de código?

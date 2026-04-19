@@ -16,6 +16,12 @@ class AcmePrestamo extends HTMLElement {
 
         const estadoBadge = (estado) => {
             const mapa = {
+                'Pendiente': { bg: '#fff3cd', color: '#856404' },
+                'Aprobado': { bg: '#d4edda', color: '#155724' },
+                'Rechazado': { bg: '#f8d7da', color: '#721c24' },
+                'Desembolsado': { bg: '#cce5ff', color: '#004085' }
+            };
+            const s = mapa[estado] || { bg: '#e2e3e5', color: '#383d41' };
             return `<span style="background:${s.bg};color:${s.color};padding:0.25rem 0.75rem;border-radius:20px;font-size:0.8rem;font-weight:600;">${estado}</span>`;
         };
 
@@ -50,6 +56,7 @@ class AcmePrestamo extends HTMLElement {
                             <strong>${p.destino}</strong>
                         </div>
                     </div>
+                    ${p.estado === 'Pendiente' ? `
                         <div style="margin-top:1rem;padding:0.75rem;background:#fff3cd;border-radius:8px;font-size:0.85rem;color:#856404;">
                             Tu solicitud está siendo evaluada. Recibirás respuesta en 2 a 5 días hábiles.
                         </div>` : ''}
