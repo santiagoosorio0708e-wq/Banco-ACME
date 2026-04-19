@@ -11,39 +11,9 @@ class ServicioAutenticacion {
             return { exito: false, mensaje: 'No se pudo validar su identidad. Credenciales incorrectas.' };
         }
 
-        if (usuario.rol === 'ADMIN') {
-            sessionStorage.setItem('acmeSession', JSON.stringify({ tipoId: usuario.tipoId, numeroId: usuario.numeroId }));
-            document.dispatchEvent(new CustomEvent('autenticacion-cambiada'));
-            return { exito: true, isAdmin: true };
-        }
-
-        // Return success but don't log in yet. Save pending user in sessionStorage
-        sessionStorage.setItem('acmePendingAuth', JSON.stringify({ tipoId: usuario.tipoId, numeroId: usuario.numeroId }));
-        return { exito: true, isAdmin: false };
-    }
-
-    validarMFA(codigo) {
-        const pending = JSON.parse(sessionStorage.getItem('acmePendingAuth'));
-        if (!pending) return { exito: false, mensaje: 'No hay sesión pendiente.' };
-        
-        // En un caso real se validaría un código SMS/Email. Aquí simulamos '123456' como comodín para desarrollo
-        // o generamos uno asociado a los primeros 6 digitos de su cedula
-        const codigoValido = pending.numeroId.substring(0, 6).padStart(6, '1');
-        
-        if (codigo === codigoValido || codigo === '123456') {
-            sessionStorage.removeItem('acmePendingAuth');
-            sessionStorage.setItem(
-                'acmeSession',
-                JSON.stringify({
-                    tipoId: pending.tipoId,
-                    numeroId: pending.numeroId,
-                    fechaHora: new Date().toISOString()
-                })
-            );
-            document.dispatchEvent(new CustomEvent('autenticacion-cambiada'));
-            return { exito: true };
-        }
-        return { exito: false, mensaje: 'Código de verificación incorrecto.' };
+        sessionStorage.setItem('acmeSession', JSON.stringify({ tipoId: usuario.tipoId, numeroId: usuario.numeroId, fechaHora: new Date().toISOString() }));
+        document.dispatchEvent(new CustomEvent('autenticacion-cambiada'));
+        return { exito: true, isAdmin: usuario.rol === 'ADMIN' };
     }
 
     cerrarSesion() {
