@@ -2,15 +2,34 @@ class AcmeResumen extends HTMLElement {
     connectedCallback() {
         this.usuario = window.auth.obtenerUsuarioActual();
         this.cuenta = window.db.obtenerCuentaPorUsuario(this.usuario.numeroId);
+        this.paginaActiva = 1;
+        this.porPagina = 5;
+        this.trmActual = null;
+        this.obtenerTRM();
         this.render();
     }
 
+    async obtenerTRM() {
+        try {
+            const respuesta = await fetch('https://open.er-api.com/v6/latest/USD');
+            const data = await respuesta.json();
+            this.trmActual = data.rates.COP;
+            this.render();
+        } catch(e) {
+            this.trmActual = 'Error de conexión';
+            this.render();
+        }
+    }
+
     render() {
-        const transacciones = window.db.obtenerTransaccionesPorCuenta(this.cuenta.numeroCuenta).slice(0, 10);
+        const _todasTransacciones = window.db.obtenerTransaccionesPorCuenta(this.cuenta.numeroCuenta);
+        const totalPaginas = Math.ceil(_todasTransacciones.length / this.porPagina) || 1;
+        const indexInicio = (this.paginaActiva - 1) * this.porPagina;
+        const transacciones = _todasTransacciones.slice(indexInicio, indexInicio + this.porPagina);
 
         let cuerpoTabla = '';
 
-        if (transacciones.length === 0) {
+        if (_todasTransacciones.length === 0) {
             cuerpoTabla = '<tr><td colspan="5" class="text-center" style="padding: 2rem;">No hay transacciones registradas para esta cuenta.</td></tr>';
         } else {
             transacciones.forEach((transaccion) => {
@@ -55,6 +74,19 @@ class AcmeResumen extends HTMLElement {
                         </tbody>
                     </table>
                 </div>
+                ${_todasTransacciones.length > 0 ? `
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1rem; padding-top:1rem; border-top:1px solid var(--border-color);">
+                        <button class="btn btn-secondary btn-sm" id="btn-ant-pag" ${this.paginaActiva === 1 ? 'disabled' : ''}>Anterior</button>
+                        <span style="font-size:0.9rem;">Página ${this.paginaActiva} de ${totalPaginas}</span>
+                        <button class="btn btn-secondary btn-sm" id="btn-sig-pag" ${this.paginaActiva === totalPaginas ? 'disabled' : ''}>Siguiente</button>
+                    </div>
+                ` : ''}
+
+                <!-- Indicador de divisa externa API -->
+                <div style="margin-top:2rem; padding:1rem; background: var(--secondary-color); border-radius:8px; display:inline-block;">
+                    <strong>Indicador Externo (API):</strong> 
+                    Precio del Dólar (USD) hoy: <span style="font-size:1.1rem; color:var(--primary-color); font-weight:bold;">${this.trmActual ? (typeof this.trmActual === 'number' ? '$' + Number(this.trmActual).toLocaleString('es-CO') + ' COP' : this.trmActual) : 'Cargando...'}</span>
+                </div>
             </div>
             <style>
                 @media print {
@@ -69,6 +101,25 @@ class AcmeResumen extends HTMLElement {
         `;
 
         this.querySelector('.print-btn').addEventListener('click', () => window.print());
+
+        const btnAnt = this.querySelector('#btn-ant-pag');
+        const btnSig = this.querySelector('#btn-sig-pag');
+
+        if(btnAnt) btnAnt.addEventListener('click', () => {
+            if(this.paginaActiva > 1) {
+                this.paginaActiva--;
+                this.render();
+            }
+        });
+
+        if(btnSig) btnSig.addEventListener('click', () => {
+             const _todas = window.db.obtenerTransaccionesPorCuenta(this.cuenta.numeroCuenta);
+             const _totalPaginas = Math.ceil(_todas.length / this.porPagina);
+             if (this.paginaActiva < _totalPaginas) {
+                 this.paginaActiva++;
+                 this.render();
+             }
+        });
     }
 }
 

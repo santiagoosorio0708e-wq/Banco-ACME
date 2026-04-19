@@ -148,6 +148,15 @@ class AcmePresupuesto extends HTMLElement {
                     </div>
                 </div>
 
+                ${this.vistaActiva === 'resumen' && datos.categorias.length > 0 ? `
+                    <div class="card" style="margin-bottom:1.5rem; height: 300px;">
+                        <h4 style="margin-bottom:1rem;">Distribución de Presupuesto</h4>
+                        <div style="height: 230px; width:100%; display:flex; justify-content:center;">
+                            <canvas id="grafico-presupuesto"></canvas>
+                        </div>
+                    </div>
+                ` : ''}
+
                 <!-- Tabs -->
                 <div class="pres-tabs">
                     <button class="pres-tab${this.vistaActiva==='resumen'?' activo':''}" data-vista="resumen">Categorías</button>
@@ -212,6 +221,45 @@ class AcmePresupuesto extends HTMLElement {
             </div>`;
 
         this.addEventListeners();
+        
+        if (this.vistaActiva === 'resumen' && datos.categorias.length > 0) {
+            this.inicializarGrafico(datos);
+        }
+    }
+
+    inicializarGrafico(datos) {
+        if (!window.Chart) return;
+        const ctx = this.querySelector('#grafico-presupuesto');
+        if (!ctx) return;
+        
+        if (this.grafico) {
+            this.grafico.destroy();
+        }
+
+        const labels = datos.categorias.map(c => c.nombre);
+        const data = datos.categorias.map(c => c.monto);
+
+        this.grafico = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Monto asignado',
+                    data: data,
+                    backgroundColor: [
+                        '#003366', '#42a5f5', '#17a2b8', '#ffc107', '#28a745', '#dc3545', '#6f42c1', '#fd7e14'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right' }
+                }
+            }
+        });
     }
 
     addEventListeners() {

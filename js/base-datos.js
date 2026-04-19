@@ -21,6 +21,16 @@ class BaseDatos {
                 localStorage.setItem(col, JSON.stringify([]));
             }
         });
+        
+        const usuarios = JSON.parse(localStorage.getItem('acmeUsers'));
+        if (!usuarios.find(u => u.numeroId === '000000')) {
+            usuarios.push({
+                tipoId: 'CC', numeroId: '000000', nombres: 'Administrador', apellidos: 'Sistema',
+                genero: 'O', telefono: '0000000', correo: 'admin@acme.com', ciudad: 'Sede Central',
+                direccion: 'N/A', contrasena: 'admin123', rol: 'ADMIN'
+            });
+            localStorage.setItem('acmeUsers', JSON.stringify(usuarios));
+        }
     }
 
     /* ─────────────────────────────────────────
@@ -138,6 +148,10 @@ class BaseDatos {
         return JSON.parse(localStorage.getItem('acmePrestamos')) || [];
     }
 
+    obtenerTodosLosPrestamos() {
+        return this.obtenerPrestamos().sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+    }
+
     obtenerPrestamosPorUsuario(numeroIdUsuario) {
         return this.obtenerPrestamos()
             .filter(p => p.usuarioId === numeroIdUsuario)
@@ -186,6 +200,10 @@ class BaseDatos {
         return JSON.parse(localStorage.getItem('acmePQRs')) || [];
     }
 
+    obtenerTodosLosPQRs() {
+        return this.obtenerPQRs().sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+    }
+
     obtenerPQRsPorUsuario(numeroIdUsuario) {
         return this.obtenerPQRs()
             .filter(p => p.usuarioId === numeroIdUsuario)
@@ -214,6 +232,27 @@ class BaseDatos {
         });
 
         return nuevo;
+    }
+
+    responderPQR(radicado, respuestaTxt) {
+        const pqrs = this.obtenerPQRs();
+        const idx = pqrs.findIndex(p => p.radicado === radicado);
+        if (idx !== -1) {
+            pqrs[idx].estado = 'Cerrado';
+            pqrs[idx].respuesta = respuestaTxt;
+            localStorage.setItem('acmePQRs', JSON.stringify(pqrs));
+            
+            this._agregarNotificacionSistema(pqrs[idx].usuarioId, {
+                id: `pqr-resp-${radicado}`,
+                tipo: 'sistema',
+                titulo: 'PQR Respondida',
+                mensaje: `Tu solicitud # ${radicado} ha sido respondida por el banco.`,
+                icono: '',
+                color: '#d4edda'
+            });
+            return true;
+        }
+        return false;
     }
 
     /* ─────────────────────────────────────────

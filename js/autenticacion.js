@@ -11,9 +11,15 @@ class ServicioAutenticacion {
             return { exito: false, mensaje: 'No se pudo validar su identidad. Credenciales incorrectas.' };
         }
 
+        if (usuario.rol === 'ADMIN') {
+            sessionStorage.setItem('acmeSession', JSON.stringify({ tipoId: usuario.tipoId, numeroId: usuario.numeroId }));
+            document.dispatchEvent(new CustomEvent('autenticacion-cambiada'));
+            return { exito: true, isAdmin: true };
+        }
+
         // Return success but don't log in yet. Save pending user in sessionStorage
         sessionStorage.setItem('acmePendingAuth', JSON.stringify({ tipoId: usuario.tipoId, numeroId: usuario.numeroId }));
-        return { exito: true };
+        return { exito: true, isAdmin: false };
     }
 
     validarMFA(codigo) {
