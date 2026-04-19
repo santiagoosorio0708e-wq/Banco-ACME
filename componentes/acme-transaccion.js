@@ -58,6 +58,12 @@ class AcmeTransaccion extends HTMLElement {
             `
             : '';
 
+        const campoClave = !configuracion.esConsignacion ? 
+            `<div class="form-group" style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                <label>Clave Dinámica (Ver token en menú superior)</label>
+                <input type="text" id="tx-clave-dinamica" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" required placeholder="Ingrese 6 dígitos de seguridad" style="text-align: center; letter-spacing: 0.3em; font-size: 1.2rem;">
+            </div>` : '';
+
         const recibo = this.ultimaTransaccion
             ? `
                 <div class="card" id="tx-print-area" style="border: 1px solid var(--border-color); background: #fcfcfd;">
@@ -109,6 +115,7 @@ class AcmeTransaccion extends HTMLElement {
                         <label>Valor a ${this.tipo === 'deposit' ? 'consignar' : this.tipo === 'withdraw' ? 'retirar' : 'pagar'}</label>
                         <input type="number" id="monto-transaccion" min="1" step="0.01" required>
                     </div>
+                    ${campoClave}
                     <button type="submit" class="btn btn-primary">${configuracion.textoBoton}</button>
                 </form>
             </div>
@@ -133,10 +140,17 @@ class AcmeTransaccion extends HTMLElement {
         const formulario = this.querySelector('#formulario-transaccion');
         const cuadroAlerta = this.querySelector('#alerta-transaccion');
         const campoReferenciaServicio = this.querySelector('#tx-referencia-servicio');
+        const campoClave = this.querySelector('#tx-clave-dinamica');
 
         if (campoReferenciaServicio) {
             campoReferenciaServicio.addEventListener('input', () => {
                 campoReferenciaServicio.value = campoReferenciaServicio.value.replace(/\D/g, '').slice(0, 11);
+            });
+        }
+        
+        if (campoClave) {
+            campoClave.addEventListener('input', () => {
+                campoClave.value = campoClave.value.replace(/\D/g, '').slice(0, 6);
             });
         }
 
@@ -149,6 +163,14 @@ class AcmeTransaccion extends HTMLElement {
             if (isNaN(monto) || monto <= 0) {
                 this.mostrarAlerta(cuadroAlerta, 'Por favor ingrese un valor válido.', 'danger');
                 return;
+            }
+
+            if (!configuracion.esConsignacion) {
+                const clave = campoClave.value;
+                if (!window.auth.validarClaveDinamica(clave)) {
+                    this.mostrarAlerta(cuadroAlerta, 'La clave dinámica es incorrecta o ha expirado.', 'danger');
+                    return;
+                }
             }
 
             let concepto = configuracion.concepto;
@@ -180,7 +202,7 @@ class AcmeTransaccion extends HTMLElement {
 
                 this.render();
                 this.addEventListeners();
-                this.mostrarAlerta(this.querySelector('#alerta-transaccion'), 'Transacción realizada con éxito.', 'success');
+                this.mostrarAlerta(this.querySelector('#alerta-transaccion'), 'Transacción verificada y realizada con éxito.', 'success');
             } catch (error) {
                 this.mostrarAlerta(cuadroAlerta, error.message, 'danger');
             }
