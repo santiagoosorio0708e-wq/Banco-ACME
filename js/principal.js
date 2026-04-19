@@ -37,11 +37,7 @@ class Aplicacion {
         this.reiniciarTimeoutInactividad();
 
         if (usuario) {
-            if (usuario.rol === 'ADMIN') {
-                this.contenedor.innerHTML = '<acme-admin></acme-admin>';
-            } else {
-                this.contenedor.innerHTML = '<acme-dashboard></acme-dashboard>';
-            }
+            this.contenedor.innerHTML = '<acme-dashboard></acme-dashboard>';
             return;
         }
 

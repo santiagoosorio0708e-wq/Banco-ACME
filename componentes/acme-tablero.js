@@ -17,7 +17,7 @@ class AcmeTablero extends HTMLElement {
 
     /* ── Definición de módulos del menú ── */
     obtenerModulos() {
-        return [
+        const modulos = [
             { grupo: 'Principal',       items: [
                 { vista: 'tx-summary',   icono: '', texto: 'Resumen de cuenta' },
                 { vista: 'tarjeta',      icono: '', texto: 'Mi tarjeta virtual' },
@@ -43,6 +43,16 @@ class AcmeTablero extends HTMLElement {
                 { vista: 'soporte',      icono: '', texto: 'Soporte / PQR' }
             ]}
         ];
+
+        if (this.usuario && this.usuario.rol === 'ADMIN') {
+            modulos.push({
+                grupo: 'Administración', items: [
+                    { vista: 'admin', icono: '', texto: 'Panel Administrativo' }
+                ]
+            });
+        }
+
+        return modulos;
     }
 
     construirMenu() {
@@ -387,7 +397,8 @@ class AcmeTablero extends HTMLElement {
             'notificaciones':'<acme-notificaciones></acme-notificaciones>',
             'tarjeta':       '<acme-tarjeta></acme-tarjeta>',
             'perfil':        '<acme-perfil></acme-perfil>',
-            'bolsillos':     '<acme-bolsillos></acme-bolsillos>'
+            'bolsillos':     '<acme-bolsillos></acme-bolsillos>',
+            'admin':         '<acme-admin></acme-admin>'
         };
 
         contenedor.innerHTML = mapaVistas[vista] ?? '<acme-summary></acme-summary>';

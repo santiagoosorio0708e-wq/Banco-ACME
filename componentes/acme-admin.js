@@ -85,18 +85,11 @@ class AcmeAdmin extends HTMLElement {
         }
 
         this.innerHTML = `
-            <div style="background: var(--primary-color); padding: 1rem 2rem; color: white; display: flex; justify-content: space-between; align-items: center;">
-                <h2 style="margin: 0; display:flex; align-items:center; gap:0.5rem;">
-                    <img src="imagenes/logo.png" style="height:30px; filter: brightness(0) invert(1);" alt="Logo">
-                    Panel de Administrador
-                </h2>
-                <button class="btn btn-secondary admin-btn-logout" style="border-color: white; color: white;">Cerrar sesión</button>
-            </div>
-            <div class="container" style="max-width: 1000px; margin: 2rem auto;">
+            <div style="max-width: 1000px; margin: 0 auto;">
                 
-                <div style="display:flex; gap: 1rem; margin-bottom: 1rem;">
-                    <button class="btn ${this.vistaActual === 'prestamos' ? 'btn-primary' : 'btn-secondary'}" id="admin-tab-prestamos">Solicitudes de Préstamos</button>
-                    <button class="btn ${this.vistaActual === 'pqrs' ? 'btn-primary' : 'btn-secondary'}" id="admin-tab-pqrs">Bandeja de PQRs</button>
+                <div style="display:flex; gap: 1rem; margin-bottom: 1.5rem;">
+                    <button class="btn ${this.vistaActual === 'prestamos' ? 'btn-primary' : 'btn-secondary'}" id="admin-tab-prestamos" style="width: auto;">Solicitudes de Préstamos</button>
+                    <button class="btn ${this.vistaActual === 'pqrs' ? 'btn-primary' : 'btn-secondary'}" id="admin-tab-pqrs" style="width: auto;">Bandeja de PQRs</button>
                 </div>
 
                 ${contenido}
@@ -106,9 +99,6 @@ class AcmeAdmin extends HTMLElement {
     }
 
     addEventListeners() {
-        this.querySelector('.admin-btn-logout').addEventListener('click', () => {
-            window.auth.cerrarSesion();
-        });
 
         this.querySelector('#admin-tab-prestamos').addEventListener('click', () => {
             this.vistaActual = 'prestamos';
