@@ -31,6 +31,8 @@ class BaseDatos {
             });
             localStorage.setItem('acmeUsers', JSON.stringify(usuarios));
         }
+
+        this.migrarTarjetasVirtuales();
     }
 
     /* ─────────────────────────────────────────
@@ -90,6 +92,50 @@ class BaseDatos {
         return this.obtenerCuentas().find(c => c.numeroCuenta === numeroCuenta) || null;
     }
 
+    generarNumeroTarjetaUnico() {
+        const cuentas = this.obtenerCuentas();
+        const existentes = new Set(
+            cuentas
+                .map(c => String(c.numeroTarjetaVirtual ?? '').replace(/\D/g, ''))
+                .filter(numero => /^\d{16}$/.test(numero))
+        );
+
+        let numeroTarjeta;
+        do {
+            numeroTarjeta = `4${Math.floor(Math.random() * 1e15).toString().padStart(15, '0')}`;
+        } while (existentes.has(numeroTarjeta));
+
+        return numeroTarjeta;
+    }
+
+    migrarTarjetasVirtuales() {
+        const cuentas = this.obtenerCuentas();
+        const existentes = new Set(
+            cuentas
+                .map(c => String(c.numeroTarjetaVirtual ?? '').replace(/\D/g, ''))
+                .filter(numero => /^\d{16}$/.test(numero))
+        );
+        let huboCambios = false;
+
+        cuentas.forEach(cuenta => {
+            const numeroActual = String(cuenta.numeroTarjetaVirtual ?? '').replace(/\D/g, '');
+            if (!/^\d{16}$/.test(numeroActual)) {
+                let nuevoNumero;
+                do {
+                    nuevoNumero = `4${Math.floor(Math.random() * 1e15).toString().padStart(15, '0')}`;
+                } while (existentes.has(nuevoNumero));
+
+                cuenta.numeroTarjetaVirtual = nuevoNumero;
+                existentes.add(nuevoNumero);
+                huboCambios = true;
+            }
+        });
+
+        if (huboCambios) {
+            localStorage.setItem('acmeAccounts', JSON.stringify(cuentas));
+        }
+    }
+
     crearCuenta(numeroIdUsuario) {
         const cuentas = this.obtenerCuentas();
         const numeroCuenta = Math.floor(1000000000 + Math.random() * 9000000000).toString();
@@ -97,7 +143,9 @@ class BaseDatos {
             numeroCuenta,
             usuarioId: numeroIdUsuario,
             saldo: 0.0,
-            fechaCreacion: new Date().toISOString()
+            fechaCreacion: new Date().toISOString(),
+            tarjetaBloqueada: false,
+            numeroTarjetaVirtual: this.generarNumeroTarjetaUnico()
         };
         cuentas.push(nuevaCuenta);
         localStorage.setItem('acmeAccounts', JSON.stringify(cuentas));
@@ -117,6 +165,16 @@ class BaseDatos {
         }
         localStorage.setItem('acmeAccounts', JSON.stringify(cuentas));
         return cuentas[idx].saldo;
+    }
+
+    actualizarEstadoTarjeta(numeroCuenta, tarjetaBloqueada) {
+        const cuentas = this.obtenerCuentas();
+        const idx = cuentas.findIndex(c => c.numeroCuenta === numeroCuenta);
+        if (idx === -1) throw new Error('Cuenta no encontrada.');
+
+        cuentas[idx].tarjetaBloqueada = Boolean(tarjetaBloqueada);
+        localStorage.setItem('acmeAccounts', JSON.stringify(cuentas));
+        return cuentas[idx];
     }
 
     /* ─────────────────────────────────────────
