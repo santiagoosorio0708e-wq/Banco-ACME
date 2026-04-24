@@ -47,7 +47,8 @@ class AcmeTablero extends HTMLElement {
         if (this.usuario && this.usuario.rol === 'ADMIN') {
             modulos.push({
                 grupo: 'Administración', items: [
-                    { vista: 'admin', icono: '', texto: 'Panel Administrativo' }
+                    { vista: 'admin', icono: '', texto: 'Panel Administrativo' },
+                    { vista: 'reporte', icono: '', texto: 'Reporte de Saldos' }
                 ]
             });
         }
@@ -398,7 +399,8 @@ class AcmeTablero extends HTMLElement {
             'tarjeta':       '<acme-tarjeta></acme-tarjeta>',
             'perfil':        '<acme-perfil></acme-perfil>',
             'bolsillos':     '<acme-bolsillos></acme-bolsillos>',
-            'admin':         '<acme-admin></acme-admin>'
+            'admin':         '<acme-admin></acme-admin>',
+            'reporte':       '<acme-reporte></acme-reporte>'
         };
 
         contenedor.innerHTML = mapaVistas[vista] ?? '<acme-summary></acme-summary>';
