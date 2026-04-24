@@ -74,7 +74,7 @@ class AcmeResumen extends HTMLElement {
                     transition: transform 0.3s ease, box-shadow 0.3s ease;
                 }
                 .saldo-card:hover {
-                    transform: translateY(-3px);
+                    transform: translateY(-3Últimos Movimientospx);
                     box-shadow: var(--shadow-lg);
                 }
                 .saldo-card::after {
@@ -185,7 +185,7 @@ class AcmeResumen extends HTMLElement {
             </style>
             
             <div class="trm-indicator">
-                🌎 USD Hoy: <span>${this.trmActual ? (typeof this.trmActual === 'number' ? '$' + Number(this.trmActual).toLocaleString('es-CO') + ' COP' : this.trmActual) : 'Cargando...'}</span>
+                 USD Hoy: <span>${this.trmActual ? (typeof this.trmActual === 'number' ? '$' + Number(this.trmActual).toLocaleString('es-CO') + ' COP' : this.trmActual) : 'Cargando...'}</span>
             </div>
 
             <div class="resumen-grid">
@@ -201,37 +201,37 @@ class AcmeResumen extends HTMLElement {
                     <h3 style="margin-bottom: 1.25rem; color: var(--text-dark); font-size: 1.3rem;">Operaciones Frecuentes</h3>
                     <div class="quick-actions-grid">
                         <div class="action-card" data-action="transferencia">
-                            <div class="action-icon">💸</div>
+                            <div class="action-icon"></div>
                             <span>Transferir</span>
                         </div>
                         <div class="action-card" data-action="payment">
-                            <div class="action-icon">🧾</div>
+                            <div class="action-icon"></div>
                             <span>Pagar</span>
                         </div>
                         <div class="action-card" data-action="deposit">
-                            <div class="action-icon">📥</div>
+                            <div class="action-icon"></div>
                             <span>Consignar</span>
                         </div>
                         <div class="action-card" data-action="bolsillos">
-                            <div class="action-icon">💰</div>
+                            <div class="action-icon"></div>
                             <span>Bolsillos</span>
                         </div>
                         <div class="action-card" data-action="prestamo">
-                            <div class="action-icon">🏦</div>
+                            <div class="action-icon"></div>
                             <span>Créditos</span>
                         </div>
                         <div class="action-card" data-action="simulador">
-                            <div class="action-icon">📊</div>
+                            <div class="action-icon"></div>
                             <span>Simulador</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Movimientos Recientes -->
+            <!-- Movimientos -->
             <div class="card" style="padding: 1.75rem;">
                 <div class="movimientos-header">
-                    <h3>Últimos Movimientos</h3>
+                    <h3>Egresos e Ingresos</h3>
                     <button class="btn btn-outline" style="width: auto; padding: 0.5rem 1.25rem; font-size: 0.85rem; border-radius: 50px;" id="btn-ver-todos">Ver resumen detallado</button>
                 </div>
                 

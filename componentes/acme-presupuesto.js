@@ -114,7 +114,7 @@ class AcmePresupuesto extends HTMLElement {
             <div style="max-width:880px;margin:0 auto;">
                 <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;margin-bottom:1rem;">
                     <div>
-                        <h3 style="margin:0;">Presupuesto personal</h3>
+                        <h3 style="margin:0;">Gastos mensuales</h3>
                         <p style="margin:0.25rem 0 0;color:var(--text-light);">${mes.charAt(0).toUpperCase() + mes.slice(1)}</p>
                     </div>
                 </div>
@@ -140,7 +140,7 @@ class AcmePresupuesto extends HTMLElement {
                 <!-- Barra general -->
                 <div class="card" style="margin-bottom:1.5rem;">
                     <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;font-size:0.9rem;">
-                        <span style="font-weight:600;">Uso del presupuesto mensual</span>
+                        <span style="font-weight:600;">Resumen de uso del presupuesto mensual</span>
                         <span style="color:${colorBarra};font-weight:700;">${Math.round(porcentajeUsado)}%</span>
                     </div>
                     <div style="background:#eee;border-radius:99px;height:14px;overflow:hidden;">
