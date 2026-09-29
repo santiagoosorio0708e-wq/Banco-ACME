@@ -457,5 +457,5 @@ class BaseDatos {
     }
 }
 
-window.db = new BaseDatos();
-window.db.migrarDatos();
+export const db = new BaseDatos();
+db.migrarDatos();

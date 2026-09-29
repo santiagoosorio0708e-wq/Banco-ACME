@@ -1,3 +1,5 @@
+import { db } from '../js/base-datos.js';
+
 class AcmeRegister extends HTMLElement {
     connectedCallback() {
         this.render();
@@ -120,8 +122,8 @@ class AcmeRegister extends HTMLElement {
             };
 
             try {
-                window.db.crearUsuario(usuario);
-                const nuevaCuenta = window.db.obtenerCuentaPorUsuario(usuario.numeroId);
+                db.crearUsuario(usuario);
+                const nuevaCuenta = db.obtenerCuentaPorUsuario(usuario.numeroId);
 
                 this.querySelector('#tarjeta-registro').classList.add('hidden');
                 this.querySelector('#numero-cuenta-exito').textContent = nuevaCuenta.numeroCuenta;

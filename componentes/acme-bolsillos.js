@@ -1,7 +1,10 @@
+import { db } from '../js/base-datos.js';
+import { auth } from '../js/autenticacion.js';
+
 class AcmeBolsillos extends HTMLElement {
     connectedCallback() {
-        this.usuario = window.auth.obtenerUsuarioActual();
-        this.cuenta = window.db.obtenerCuentaPorUsuario(this.usuario.numeroId);
+        this.usuario = auth.obtenerUsuarioActual();
+        this.cuenta = db.obtenerCuentaPorUsuario(this.usuario.numeroId);
         this.render();
     }
 
@@ -97,12 +100,12 @@ class AcmeBolsillos extends HTMLElement {
                 if (valor > this.cuenta.saldo) return this.mostrarAlerta(alerta, 'Su cuenta principal no tiene fondos suficientes.', 'danger');
 
                 try {
-                    this.cuenta.saldo = window.db.actualizarSaldo(this.cuenta.numeroCuenta, valor, false);
+                    this.cuenta.saldo = db.actualizarSaldo(this.cuenta.numeroCuenta, valor, false);
                     const bolsillos = this.obtenerBolsillos();
                     const b = bolsillos.find(x => x.id === id);
                     b.saldo += valor;
                     this.guardarBolsillos(bolsillos);
-                    window.db.crearTransaccion({ numeroCuenta: this.cuenta.numeroCuenta, tipo: 'Retiro', monto: valor, concepto: `Carga a bolsillo: ${b.nombre}` });
+                    db.crearTransaccion({ numeroCuenta: this.cuenta.numeroCuenta, tipo: 'Retiro', monto: valor, concepto: `Carga a bolsillo: ${b.nombre}` });
                     this.render();
                 } catch(e) { this.mostrarAlerta(alerta, e.message, 'danger'); }
             });
@@ -122,8 +125,8 @@ class AcmeBolsillos extends HTMLElement {
                 try {
                     b.saldo -= valor;
                     this.guardarBolsillos(bolsillos);
-                    this.cuenta.saldo = window.db.actualizarSaldo(this.cuenta.numeroCuenta, valor, true); // Devuelve
-                    window.db.crearTransaccion({ numeroCuenta: this.cuenta.numeroCuenta, tipo: 'Consignación', monto: valor, concepto: `Descarga de bolsillo: ${b.nombre}` });
+                    this.cuenta.saldo = db.actualizarSaldo(this.cuenta.numeroCuenta, valor, true); // Devuelve
+                    db.crearTransaccion({ numeroCuenta: this.cuenta.numeroCuenta, tipo: 'Consignación', monto: valor, concepto: `Descarga de bolsillo: ${b.nombre}` });
                     this.render();
                 } catch(e) { this.mostrarAlerta(alerta, e.message, 'danger'); }
             });

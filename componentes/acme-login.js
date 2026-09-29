@@ -1,3 +1,5 @@
+import { auth } from '../js/autenticacion.js';
+
 class AcmeLogin extends HTMLElement {
     connectedCallback() {
         this.render();
@@ -69,7 +71,7 @@ class AcmeLogin extends HTMLElement {
                 return;
             }
 
-            const respuesta = window.auth.iniciarSesion(tipoId, numeroId, contrasena);
+            const respuesta = auth.iniciarSesion(tipoId, numeroId, contrasena);
             if (!respuesta.exito) {
                 contenedorError.textContent = respuesta.mensaje;
                 contenedorError.classList.remove('hidden');

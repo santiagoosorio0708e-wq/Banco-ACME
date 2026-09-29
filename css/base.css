@@ -1,0 +1,15 @@
+/* css/base.css */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+  min-height: 100vh;
+  color: var(--text-dark);
+  line-height: 1.6;
+  background-attachment: fixed;
+}

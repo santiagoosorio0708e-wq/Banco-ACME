@@ -1,3 +1,6 @@
+import { db } from '../js/base-datos.js';
+import { auth } from '../js/autenticacion.js';
+
 /**
  * acme-tarjeta.js
  * Componente Web: Tarjeta virtual del usuario
@@ -5,8 +8,8 @@
  */
 class AcmeTarjeta extends HTMLElement {
     connectedCallback() {
-        this.usuario = window.auth.obtenerUsuarioActual();
-        this.cuenta = window.db.obtenerCuentaPorUsuario(this.usuario.numeroId);
+        this.usuario = auth.obtenerUsuarioActual();
+        this.cuenta = db.obtenerCuentaPorUsuario(this.usuario.numeroId);
         this.cuenta.tarjetaBloqueada = Boolean(this.cuenta.tarjetaBloqueada);
         this.mostrarNumero = false;
         this.render();
@@ -14,7 +17,7 @@ class AcmeTarjeta extends HTMLElement {
 
     calcularEstadisticasMes() {
         const ahora = new Date();
-        const txs = window.db.obtenerTransaccionesPorCuenta(this.cuenta.numeroCuenta).filter(t => {
+        const txs = db.obtenerTransaccionesPorCuenta(this.cuenta.numeroCuenta).filter(t => {
             const f = new Date(t.fecha);
             return f.getMonth() === ahora.getMonth() && f.getFullYear() === ahora.getFullYear();
         });
@@ -41,7 +44,7 @@ class AcmeTarjeta extends HTMLElement {
         const mes = new Date().toLocaleDateString('es-CO', { month: 'long', year: 'numeric' });
         const tarjetaBloqueada = Boolean(this.cuenta.tarjetaBloqueada);
 
-        const txsRecientes = window.db.obtenerTransaccionesPorCuenta(this.cuenta.numeroCuenta).slice(0, 5);
+        const txsRecientes = db.obtenerTransaccionesPorCuenta(this.cuenta.numeroCuenta).slice(0, 5);
         const movimientosHTML = txsRecientes.length === 0
             ? `<p style="color:var(--text-light);text-align:center;padding:1.5rem;">Sin movimientos registrados.</p>`
             : txsRecientes.map(t => {
@@ -298,7 +301,7 @@ class AcmeTarjeta extends HTMLElement {
 
         this.querySelector('#btn-bloquear')?.addEventListener('click', () => {
             const nuevoEstado = !Boolean(this.cuenta.tarjetaBloqueada);
-            window.db.actualizarEstadoTarjeta(this.cuenta.numeroCuenta, nuevoEstado);
+            db.actualizarEstadoTarjeta(this.cuenta.numeroCuenta, nuevoEstado);
             this.cuenta.tarjetaBloqueada = nuevoEstado;
             this.render();
 

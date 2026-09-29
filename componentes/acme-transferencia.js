@@ -1,7 +1,10 @@
+import { db } from '../js/base-datos.js';
+import { auth } from '../js/autenticacion.js';
+
 class AcmeTransferencia extends HTMLElement {
     connectedCallback() {
-        this.usuario = window.auth.obtenerUsuarioActual();
-        this.cuenta = window.db.obtenerCuentaPorUsuario(this.usuario.numeroId);
+        this.usuario = auth.obtenerUsuarioActual();
+        this.cuenta = db.obtenerCuentaPorUsuario(this.usuario.numeroId);
         this.ultimaTransferencia = null;
         this.render();
     }
@@ -184,13 +187,13 @@ class AcmeTransferencia extends HTMLElement {
             this.mostrarAlerta(alerta, 'No puedes transferir a tu propia cuenta.', 'danger');
             return;
         }
-        const cuentaDestinatario = window.db.obtenerCuentaPorNumero(cuentaDestino);
+        const cuentaDestinatario = db.obtenerCuentaPorNumero(cuentaDestino);
         if (!cuentaDestinatario) {
             this.mostrarAlerta(alerta, 'La cuenta destino no existe en Banco Acme.', 'danger');
             return;
         }
-        const destinatario = window.db.obtenerUsuario(
-            window.db.obtenerUsuarios().find(u => u.numeroId === cuentaDestinatario.usuarioId)?.tipoId,
+        const destinatario = db.obtenerUsuario(
+            db.obtenerUsuarios().find(u => u.numeroId === cuentaDestinatario.usuarioId)?.tipoId,
             cuentaDestinatario.usuarioId
         );
         const nombreDestino = destinatario ? `${destinatario.nombres} ${destinatario.apellidos}` : 'Titular';
@@ -246,7 +249,7 @@ class AcmeTransferencia extends HTMLElement {
         const alerta = this.querySelector('#alerta-transferencia');
         const clave = this.querySelector('#tf-clave-dinamica').value;
 
-        if (!window.auth.validarClaveDinamica(clave)) {
+        if (!auth.validarClaveDinamica(clave)) {
             this.mostrarAlerta(alerta, 'La clave dinámica es incorrecta o ha expirado.', 'danger');
             return;
         }
@@ -257,19 +260,19 @@ class AcmeTransferencia extends HTMLElement {
 
         try {
             // Débito cuenta origen
-            this.cuenta.saldo = window.db.actualizarSaldo(this.cuenta.numeroCuenta, monto, false);
+            this.cuenta.saldo = db.actualizarSaldo(this.cuenta.numeroCuenta, monto, false);
             // Crédito cuenta destino
-            window.db.actualizarSaldo(cuentaDestino, monto, true);
+            db.actualizarSaldo(cuentaDestino, monto, true);
 
             // Registrar transacciones
-            this.ultimaTransferencia = window.db.crearTransaccion({
+            this.ultimaTransferencia = db.crearTransaccion({
                 numeroCuenta: this.cuenta.numeroCuenta,
                 tipo: 'Retiro',
                 monto,
                 concepto: `Transferencia: ${concepto}`,
                 cuentaDestino
             });
-            window.db.crearTransaccion({
+            db.crearTransaccion({
                 numeroCuenta: cuentaDestino,
                 tipo: 'Consignación',
                 monto,

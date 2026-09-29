@@ -1,20 +1,23 @@
+import { db } from '../js/base-datos.js';
+import { auth } from '../js/autenticacion.js';
+
 class AcmePresupuesto extends HTMLElement {
     connectedCallback() {
-        this.usuario = window.auth.obtenerUsuarioActual();
-        this.cuenta = window.db.obtenerCuentaPorUsuario(this.usuario.numeroId);
+        this.usuario = auth.obtenerUsuarioActual();
+        this.cuenta = db.obtenerCuentaPorUsuario(this.usuario.numeroId);
         this.vistaActiva = 'resumen'; 
         this.render();
     }
 
     obtenerDatos() {
-        return window.db.obtenerPresupuesto(this.usuario.numeroId);
+        return db.obtenerPresupuesto(this.usuario.numeroId);
     }
 
     calcularGastoReal() {
         const ahora = new Date();
         const mesActual = ahora.getMonth();
         const anioActual = ahora.getFullYear();
-        const txs = window.db.obtenerTransaccionesPorCuenta(this.cuenta.numeroCuenta)
+        const txs = db.obtenerTransaccionesPorCuenta(this.cuenta.numeroCuenta)
             .filter(t => {
                 const f = new Date(t.fecha);
                 return f.getMonth() === mesActual && f.getFullYear() === anioActual && t.tipo === 'Retiro';
@@ -270,7 +273,7 @@ class AcmePresupuesto extends HTMLElement {
         // Eliminar categoría
         this.querySelectorAll('.btn-eliminar-cat').forEach(btn => {
             btn.addEventListener('click', () => {
-                window.db.eliminarCategoriaPres(this.usuario.numeroId, btn.dataset.nombre);
+                db.eliminarCategoriaPres(this.usuario.numeroId, btn.dataset.nombre);
                 this.render();
             });
         });
@@ -295,7 +298,7 @@ class AcmePresupuesto extends HTMLElement {
                 const monto = parseFloat(this.querySelector('#cat-monto').value);
                 if (!nombre) { this.mostrarAlerta(alerta, 'Ingresa un nombre para la categoría.', 'danger'); return; }
                 if (isNaN(monto) || monto < 1000) { this.mostrarAlerta(alerta, 'El monto mínimo es $1.000.', 'danger'); return; }
-                window.db.agregarCategoriaPres(this.usuario.numeroId, { nombre, monto });
+                db.agregarCategoriaPres(this.usuario.numeroId, { nombre, monto });
                 this.vistaActiva = 'resumen';
                 this.render();
             });
@@ -312,7 +315,7 @@ class AcmePresupuesto extends HTMLElement {
                 const icono = this.querySelector('#meta-icono') ? this.querySelector('#meta-icono').value : '';
                 if (!nombre) { this.mostrarAlerta(alerta, 'Ingresa el nombre de tu meta.', 'danger'); return; }
                 if (isNaN(objetivo) || objetivo < 10000) { this.mostrarAlerta(alerta, 'El objetivo mínimo es $10.000.', 'danger'); return; }
-                window.db.agregarMeta(this.usuario.numeroId, { nombre, objetivo, acumulado: 0, icono });
+                db.agregarMeta(this.usuario.numeroId, { nombre, objetivo, acumulado: 0, icono });
                 this.render();
             });
         }
@@ -327,9 +330,9 @@ class AcmePresupuesto extends HTMLElement {
                 if (isNaN(valor) || valor < 1) { this.mostrarAlerta(alerta, 'Ingresa un valor válido para abonar.', 'danger'); return; }
                 if (valor > this.cuenta.saldo) { this.mostrarAlerta(alerta, 'Saldo insuficiente para abonar a la meta.', 'danger'); return; }
                 try {
-                    this.cuenta.saldo = window.db.actualizarSaldo(this.cuenta.numeroCuenta, valor, false);
-                    window.db.crearTransaccion({ numeroCuenta: this.cuenta.numeroCuenta, tipo: 'Retiro', monto: valor, concepto: `Ahorro meta: ${nombre}` });
-                    window.db.abonarMeta(this.usuario.numeroId, nombre, valor);
+                    this.cuenta.saldo = db.actualizarSaldo(this.cuenta.numeroCuenta, valor, false);
+                    db.crearTransaccion({ numeroCuenta: this.cuenta.numeroCuenta, tipo: 'Retiro', monto: valor, concepto: `Ahorro meta: ${nombre}` });
+                    db.abonarMeta(this.usuario.numeroId, nombre, valor);
                     this.render();
                 } catch (err) { this.mostrarAlerta(alerta, err.message, 'danger'); }
             });
@@ -338,7 +341,7 @@ class AcmePresupuesto extends HTMLElement {
         // Eliminar meta
         this.querySelectorAll('.btn-eliminar-meta').forEach(btn => {
             btn.addEventListener('click', () => {
-                window.db.eliminarMeta(this.usuario.numeroId, btn.dataset.nombre);
+                db.eliminarMeta(this.usuario.numeroId, btn.dataset.nombre);
                 this.render();
             });
         });

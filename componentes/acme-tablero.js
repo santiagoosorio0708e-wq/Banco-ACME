@@ -1,6 +1,9 @@
+import { db } from '../js/base-datos.js';
+import { auth } from '../js/autenticacion.js';
+
 class AcmeTablero extends HTMLElement {
     connectedCallback() {
-        this.usuario = window.auth.obtenerUsuarioActual();
+        this.usuario = auth.obtenerUsuarioActual();
         if (!this.usuario) { window.location.hash = ''; return; }
         this.vistaActual = 'tx-summary';
         this.menuAbierto = false;
@@ -28,12 +31,15 @@ class AcmeTablero extends HTMLElement {
                 { vista: 'deposit',      icono: '', texto: 'Consignación' },
                 { vista: 'withdraw',     icono: '', texto: 'Retiro de dinero' },
                 { vista: 'transferencia',icono: '', texto: 'Transferencias' },
-                { vista: 'payment',      icono: '', texto: 'Pago de servicios' }
+                { vista: 'payment',      icono: '', texto: 'Pago de tarjetas' },
+                { vista: 'servicios',    icono: '', texto: 'Servicios Públicos' },
+                { vista: 'cajero',       icono: '', texto: 'Cajero Automático (ATM)' }
             ]},
             { grupo: 'Finanzas',        items: [
                 { vista: 'prestamo',     icono: '', texto: 'Mis créditos' },
                 { vista: 'simulador',    icono: '', texto: 'Simulador de crédito' },
-                { vista: 'presupuesto',  icono: '', texto: 'Presupuesto personal' }
+                { vista: 'presupuesto',  icono: '', texto: 'Presupuesto personal' },
+                { vista: 'inversiones',  icono: '', texto: 'Trading & Cripto' }
             ]},
             { grupo: 'Documentos',      items: [
                 { vista: 'certificate',  icono: '', texto: 'Certificado bancario' }
@@ -57,7 +63,7 @@ class AcmeTablero extends HTMLElement {
     }
 
     construirMenu() {
-        const noLeidas = window.db.contarNoLeidas(this.usuario.numeroId);
+        const noLeidas = db.contarNoLeidas(this.usuario.numeroId);
         return this.obtenerModulos().map(grupo => `
             <li class="menu-grupo-titulo">${grupo.grupo}</li>
             ${grupo.items.map(item => {
@@ -75,7 +81,7 @@ class AcmeTablero extends HTMLElement {
     actualizarClaveDinamica() {
         const el = this.querySelector('#codigo-clave-dinamica');
         if (el) {
-            el.textContent = window.auth.obtenerClaveDinamicaActual();
+            el.textContent = auth.obtenerClaveDinamicaActual();
         }
         const barra = this.querySelector('#progreso-clave-dinamica');
         if (barra) {
@@ -112,9 +118,14 @@ class AcmeTablero extends HTMLElement {
                 .sidebar {
                     width: 260px;
                     min-width: 260px;
-                    background: linear-gradient(180deg, #0a3480 0%, #0b3d91 60%, #0d4db0 100%);
+                    background: rgba(15, 23, 42, 0.85);
+                    backdrop-filter: blur(20px);
                     color: #fff;
                     display: flex;
+                    flex-direction: column;
+                    padding: 0;
+                    box-shadow: 4px 0 24px rgba(0,0,0,0.2);
+                    border-right: 1px solid rgba(255,255,255,0.05);
                     flex-direction: column;
                     padding: 0;
                     box-shadow: 4px 0 20px rgba(0,0,0,0.15);
@@ -202,18 +213,20 @@ class AcmeTablero extends HTMLElement {
                 /* ── Área principal ── */
                 .tablero-main {
                     flex: 1; min-width: 0;
-                    background: #f0f4fc;
+                    background: transparent;
                     display: flex; flex-direction: column;
                     overflow-x: hidden;
                 }
 
                 /* ── Topbar ── */
                 .tablero-topbar {
-                    background: white;
+                    background: rgba(255,255,255,0.5);
+                    backdrop-filter: blur(16px);
                     padding: 0.85rem 1.5rem;
                     display: flex; align-items: center; justify-content: space-between;
                     gap: 1rem; flex-wrap: wrap;
-                    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+                    border-bottom: 1px solid rgba(255,255,255,0.4);
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
                     position: sticky; top: 0; z-index: 50;
                 }
                 .topbar-saludo h2 { font-size: 1.1rem; margin: 0; color: var(--text-dark); }
@@ -327,7 +340,7 @@ class AcmeTablero extends HTMLElement {
                                 <div class="token-progress" id="progreso-clave-dinamica" style="width: 100%;"></div>
                             </div>
                             <span class="topbar-cuenta-badge" id="badge-cuenta">
-                                Cta. ${window.db.obtenerCuentaPorUsuario(this.usuario.numeroId)?.numeroCuenta || '—'}
+                                Cta. ${db.obtenerCuentaPorUsuario(this.usuario.numeroId)?.numeroCuenta || '—'}
                             </span>
                         </div>
                     </header>
@@ -356,7 +369,7 @@ class AcmeTablero extends HTMLElement {
         overlay?.addEventListener('click', cerrarMenu);
 
         /* Cerrar sesión */
-        this.querySelector('#btn-cerrar-sesion')?.addEventListener('click', () => window.auth.cerrarSesion());
+        this.querySelector('#btn-cerrar-sesion')?.addEventListener('click', () => auth.cerrarSesion());
 
         /* Ítems de menú */
         this.querySelectorAll('a[data-view]').forEach(a => {
@@ -389,11 +402,14 @@ class AcmeTablero extends HTMLElement {
             'deposit':       '<acme-transaction type="deposit"></acme-transaction>',
             'withdraw':      '<acme-transaction type="withdraw"></acme-transaction>',
             'payment':       '<acme-transaction type="payment"></acme-transaction>',
+            'servicios':     '<acme-servicios></acme-servicios>',
+            'cajero':        '<acme-cajero></acme-cajero>',
             'certificate':   '<acme-certificate></acme-certificate>',
             'transferencia': '<acme-transferencia></acme-transferencia>',
             'simulador':     '<acme-simulador></acme-simulador>',
             'prestamo':      '<acme-prestamo></acme-prestamo>',
             'presupuesto':   '<acme-presupuesto></acme-presupuesto>',
+            'inversiones':   '<acme-inversiones></acme-inversiones>',
             'soporte':       '<acme-soporte></acme-soporte>',
             'notificaciones':'<acme-notificaciones></acme-notificaciones>',
             'tarjeta':       '<acme-tarjeta></acme-tarjeta>',
@@ -411,7 +427,7 @@ class AcmeTablero extends HTMLElement {
 
     _actualizarBadgeNotis() {
         try {
-            const n = window.db.contarNoLeidas(this.usuario.numeroId);
+            const n = db.contarNoLeidas(this.usuario.numeroId);
             const badge = this.querySelector('a[data-view="notificaciones"] .menu-badge');
             if (badge) {
                 badge.textContent = n;

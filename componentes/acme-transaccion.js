@@ -1,7 +1,10 @@
+import { db } from '../js/base-datos.js';
+import { auth } from '../js/autenticacion.js';
+
 class AcmeTransaccion extends HTMLElement {
     connectedCallback() {
-        this.usuario = window.auth.obtenerUsuarioActual();
-        this.cuenta = window.db.obtenerCuentaPorUsuario(this.usuario.numeroId);
+        this.usuario = auth.obtenerUsuarioActual();
+        this.cuenta = db.obtenerCuentaPorUsuario(this.usuario.numeroId);
         this.tipo = this.getAttribute('type') || 'deposit';
         this.ultimaTransaccion = null;
         this.render();
@@ -167,7 +170,7 @@ class AcmeTransaccion extends HTMLElement {
 
             if (!configuracion.esConsignacion) {
                 const clave = campoClave.value;
-                if (!window.auth.validarClaveDinamica(clave)) {
+                if (!auth.validarClaveDinamica(clave)) {
                     this.mostrarAlerta(cuadroAlerta, 'La clave dinámica es incorrecta o ha expirado.', 'danger');
                     return;
                 }
@@ -190,9 +193,9 @@ class AcmeTransaccion extends HTMLElement {
             }
 
             try {
-                this.cuenta.saldo = window.db.actualizarSaldo(this.cuenta.numeroCuenta, monto, configuracion.esConsignacion);
+                this.cuenta.saldo = db.actualizarSaldo(this.cuenta.numeroCuenta, monto, configuracion.esConsignacion);
 
-                this.ultimaTransaccion = window.db.crearTransaccion({
+                this.ultimaTransaccion = db.crearTransaccion({
                     numeroCuenta: this.cuenta.numeroCuenta,
                     tipo: configuracion.etiquetaTipo,
                     monto,

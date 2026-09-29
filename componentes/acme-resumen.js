@@ -1,7 +1,10 @@
+import { db } from '../js/base-datos.js';
+import { auth } from '../js/autenticacion.js';
+
 class AcmeResumen extends HTMLElement {
     connectedCallback() {
-        this.usuario = window.auth.obtenerUsuarioActual();
-        this.cuenta = window.db.obtenerCuentaPorUsuario(this.usuario.numeroId);
+        this.usuario = auth.obtenerUsuarioActual();
+        this.cuenta = db.obtenerCuentaPorUsuario(this.usuario.numeroId);
         this.trmActual = null;
         this.obtenerTRM();
         this.render();
@@ -21,8 +24,8 @@ class AcmeResumen extends HTMLElement {
 
     render() {
         // En caso de que se haya actualizado el saldo o haya nuevas transacciones
-        this.cuenta = window.db.obtenerCuentaPorUsuario(this.usuario.numeroId);
-        const _todasTransacciones = window.db.obtenerTransaccionesPorCuenta(this.cuenta.numeroCuenta);
+        this.cuenta = db.obtenerCuentaPorUsuario(this.usuario.numeroId);
+        const _todasTransacciones = db.obtenerTransaccionesPorCuenta(this.cuenta.numeroCuenta);
         // Sólo tomamos las 5 más recientes para el dashboard
         const transacciones = _todasTransacciones.slice(0, 5);
 

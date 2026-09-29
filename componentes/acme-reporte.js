@@ -1,3 +1,5 @@
+import { db } from '../js/base-datos.js';
+
 /**
  * componentes/acme-reporte.js
  * Componente de Reporte de Saldos de Cuentas Activas.
@@ -14,8 +16,8 @@ class AcmeReporte extends HTMLElement {
      * Obtiene los datos combinados de cuentas + usuarios para el reporte.
      */
     obtenerDatosReporte() {
-        const cuentas = window.db.obtenerCuentas();
-        const usuarios = window.db.obtenerUsuarios();
+        const cuentas = db.obtenerCuentas();
+        const usuarios = db.obtenerUsuarios();
 
         // Combinar información de cada cuenta con la de su usuario dueño
         return cuentas

@@ -1,3 +1,6 @@
+import { db } from '../js/base-datos.js';
+import { auth } from '../js/autenticacion.js';
+
 /**
  * acme-perfil.js
  * Componente Web: Perfil del usuario
@@ -5,7 +8,7 @@
  */
 class AcmePerfil extends HTMLElement {
     connectedCallback() {
-        this.usuario = window.auth.obtenerUsuarioActual();
+        this.usuario = auth.obtenerUsuarioActual();
         this.modoEdicion = false;
         this.render();
         this.addEventListeners();
@@ -229,7 +232,7 @@ class AcmePerfil extends HTMLElement {
             contrasena: contrasenaActual && contrasenaNueva ? contrasenaNueva : this.usuario.contrasena
         };
 
-        window.db.actualizarUsuario(usuarioActualizado);
+        db.actualizarUsuario(usuarioActualizado);
         this.usuario = usuarioActualizado;
 
         // Actualizar sesión

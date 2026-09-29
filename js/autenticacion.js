@@ -1,3 +1,4 @@
+import { db } from './base-datos.js';
 class ServicioAutenticacion {
     iniciarSesion(tipoId, numeroId, contrasena) {
         const numeroIdLimpio = String(numeroId ?? '').trim();
@@ -6,7 +7,7 @@ class ServicioAutenticacion {
             return { exito: false, mensaje: 'El número de identificación debe tener entre 2 y 11 dígitos.' };
         }
 
-        const usuario = window.db.obtenerUsuario(tipoId, numeroIdLimpio);
+        const usuario = db.obtenerUsuario(tipoId, numeroIdLimpio);
         if (!usuario || usuario.contrasena !== contrasena) {
             return { exito: false, mensaje: 'No se pudo validar su identidad. Credenciales incorrectas.' };
         }
@@ -29,7 +30,7 @@ class ServicioAutenticacion {
         }
 
         const sesionParseada = JSON.parse(sesion);
-        return window.db.obtenerUsuario(sesionParseada.tipoId, sesionParseada.numeroId);
+        return db.obtenerUsuario(sesionParseada.tipoId, sesionParseada.numeroId);
     }
 
     obtenerClaveDinamicaActual() {

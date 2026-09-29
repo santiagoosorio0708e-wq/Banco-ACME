@@ -1,3 +1,6 @@
+import { db } from '../js/base-datos.js';
+import { auth } from '../js/autenticacion.js';
+
 /**
  * acme-prestamo.js
  * Componente Web: Solicitud de préstamos / créditos
@@ -5,14 +8,14 @@
  */
 class AcmePrestamo extends HTMLElement {
     connectedCallback() {
-        this.usuario = window.auth.obtenerUsuarioActual();
-        this.cuenta = window.db.obtenerCuentaPorUsuario(this.usuario.numeroId);
+        this.usuario = auth.obtenerUsuarioActual();
+        this.cuenta = db.obtenerCuentaPorUsuario(this.usuario.numeroId);
         this.vista = 'lista'; // 'lista' | 'solicitar'
         this.render();
     }
 
     render() {
-        const prestamos = window.db.obtenerPrestamosPorUsuario(this.usuario.numeroId);
+        const prestamos = db.obtenerPrestamosPorUsuario(this.usuario.numeroId);
 
         const estadoBadge = (estado) => {
             const mapa = {
@@ -214,7 +217,7 @@ class AcmePrestamo extends HTMLElement {
             return;
         }
 
-        window.db.crearPrestamo({
+        db.crearPrestamo({
             usuarioId: this.usuario.numeroId,
             numeroCuenta: this.cuenta.numeroCuenta,
             tipoPrestamo: tipo,
@@ -236,15 +239,15 @@ class AcmePrestamo extends HTMLElement {
     desembolsar(radicado, monto) {
         const alerta = this.querySelector('#alerta-prestamo-lista');
         try {
-            window.db.actualizarSaldo(this.cuenta.numeroCuenta, monto, true);
-            window.db.crearTransaccion({
+            db.actualizarSaldo(this.cuenta.numeroCuenta, monto, true);
+            db.crearTransaccion({
                 numeroCuenta: this.cuenta.numeroCuenta,
                 tipo: 'Consignación',
                 monto,
                 concepto: `Desembolso crédito ${radicado}`
             });
-            window.db.actualizarEstadoPrestamo(radicado, 'Desembolsado');
-            this.cuenta = window.db.obtenerCuentaPorUsuario(this.usuario.numeroId);
+            db.actualizarEstadoPrestamo(radicado, 'Desembolsado');
+            this.cuenta = db.obtenerCuentaPorUsuario(this.usuario.numeroId);
             this.render();
             this.mostrarAlerta(this.querySelector('#alerta-prestamo-lista'), `Desembolso exitoso. Se acreditaron $${Number(monto).toLocaleString('es-CO')} a tu cuenta.`, 'success');
         } catch (err) {

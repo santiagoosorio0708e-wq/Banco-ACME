@@ -1,3 +1,5 @@
+import { db } from '../js/base-datos.js';
+
 class AcmeRecovery extends HTMLElement {
     connectedCallback() {
         this.render();
@@ -95,7 +97,7 @@ class AcmeRecovery extends HTMLElement {
                 return;
             }
 
-            const usuario = window.db.obtenerUsuario(tipoId, numeroId);
+            const usuario = db.obtenerUsuario(tipoId, numeroId);
             
             // Validar que todos los datos coincidan
             if (usuario && usuario.correo === correo && usuario.telefono === telefono) {
@@ -123,7 +125,7 @@ class AcmeRecovery extends HTMLElement {
             }
 
             usuarioValidado.contrasena = nuevaContrasena;
-            window.db.actualizarUsuario(usuarioValidado);
+            db.actualizarUsuario(usuarioValidado);
 
             formularioPaso2.classList.add('hidden');
             this.querySelector('#exito-recuperacion').classList.remove('hidden');

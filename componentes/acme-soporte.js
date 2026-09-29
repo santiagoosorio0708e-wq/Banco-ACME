@@ -1,3 +1,6 @@
+import { db } from '../js/base-datos.js';
+import { auth } from '../js/autenticacion.js';
+
 /**
  * acme-soporte.js
  * Componente Web: Centro de soporte — PQR (Peticiones, Quejas y Reclamos)
@@ -5,14 +8,14 @@
  */
 class AcmeSoporte extends HTMLElement {
     connectedCallback() {
-        this.usuario = window.auth.obtenerUsuarioActual();
+        this.usuario = auth.obtenerUsuarioActual();
         this.vista = 'lista'; // 'lista' | 'nueva'
         this.categoriaActiva = 'todos';
         this.render();
     }
 
     render() {
-        const pqrs = window.db.obtenerPQRsPorUsuario(this.usuario.numeroId);
+        const pqrs = db.obtenerPQRsPorUsuario(this.usuario.numeroId);
         const categorias = ['todos', 'Petición', 'Queja', 'Reclamo', 'Sugerencia'];
 
         const filtrados = this.categoriaActiva === 'todos'
@@ -145,7 +148,7 @@ class AcmeSoporte extends HTMLElement {
                 ` : formulario}
             </div>`;
 
-        this.cuenta = window.db.obtenerCuentaPorUsuario(this.usuario.numeroId);
+        this.cuenta = db.obtenerCuentaPorUsuario(this.usuario.numeroId);
         this.addEventListeners();
     }
 
@@ -178,7 +181,7 @@ class AcmeSoporte extends HTMLElement {
         if (!asunto) { this.mostrarAlerta(alerta, 'El asunto es obligatorio.', 'danger'); return; }
         if (descripcion.length < 20) { this.mostrarAlerta(alerta, 'La descripción debe tener al menos 20 caracteres.', 'danger'); return; }
 
-        window.db.crearPQR({
+        db.crearPQR({
             usuarioId: this.usuario.numeroId,
             tipo, asunto, descripcion, canal,
             numeroCuenta: this.cuenta?.numeroCuenta || null,

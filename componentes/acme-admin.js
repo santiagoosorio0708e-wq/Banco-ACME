@@ -1,3 +1,5 @@
+import { db } from '../js/base-datos.js';
+
 class AcmeAdmin extends HTMLElement {
     connectedCallback() {
         this.vistaActual = 'prestamos';
@@ -6,8 +8,8 @@ class AcmeAdmin extends HTMLElement {
     }
 
     render() {
-        const prestamos = window.db.obtenerTodosLosPrestamos();
-        const pqrs = window.db.obtenerTodosLosPQRs();
+        const prestamos = db.obtenerTodosLosPrestamos();
+        const pqrs = db.obtenerTodosLosPQRs();
 
         let contenido = '';
         if (this.vistaActual === 'prestamos') {
@@ -116,7 +118,7 @@ class AcmeAdmin extends HTMLElement {
             btn.addEventListener('click', (e) => {
                 const id = e.target.getAttribute('data-id');
                 if (confirm('¿Confirma que desea aprobar este préstamo?')) {
-                    window.db.actualizarEstadoPrestamo(id, 'Aprobado');
+                    db.actualizarEstadoPrestamo(id, 'Aprobado');
                     this.render();
                     this.addEventListeners();
                 }
@@ -127,7 +129,7 @@ class AcmeAdmin extends HTMLElement {
             btn.addEventListener('click', (e) => {
                 const id = e.target.getAttribute('data-id');
                 if (confirm('¿Confirma que desea rechazar este préstamo?')) {
-                    window.db.actualizarEstadoPrestamo(id, 'Rechazado');
+                    db.actualizarEstadoPrestamo(id, 'Rechazado');
                     this.render();
                     this.addEventListeners();
                 }
@@ -143,7 +145,7 @@ class AcmeAdmin extends HTMLElement {
                     return;
                 }
                 if (confirm('¿Confirma enviar esta respuesta y cerrar el caso?')) {
-                    window.db.responderPQR(id, respuesta);
+                    db.responderPQR(id, respuesta);
                     this.render();
                     this.addEventListeners();
                 }

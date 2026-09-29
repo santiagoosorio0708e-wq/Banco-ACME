@@ -1,16 +1,19 @@
+import { db } from '../js/base-datos.js';
+import { auth } from '../js/autenticacion.js';
+
 class AcmeNotificaciones extends HTMLElement {
     connectedCallback() {
-        this.usuario = window.auth.obtenerUsuarioActual();
+        this.usuario = auth.obtenerUsuarioActual();
         this.filtro = 'todas';
         this.render();
     }
 
     obtenerNotificaciones() {
-        const notis = window.db.obtenerNotificaciones(this.usuario.numeroId);
-        const cuenta = window.db.obtenerCuentaPorUsuario(this.usuario.numeroId);
+        const notis = db.obtenerNotificaciones(this.usuario.numeroId);
+        const cuenta = db.obtenerCuentaPorUsuario(this.usuario.numeroId);
         
         if (cuenta) {
-            const txs = window.db.obtenerTransaccionesPorCuenta(cuenta.numeroCuenta).slice(0, 5);
+            const txs = db.obtenerTransaccionesPorCuenta(cuenta.numeroCuenta).slice(0, 5);
             txs.forEach(tx => {
                 const yaExiste = notis.find(n => n.referenciaOrigen === tx.referencia);
                 if (!yaExiste) {
@@ -42,7 +45,7 @@ class AcmeNotificaciones extends HTMLElement {
             }
         });
 
-        window.db.guardarNotificaciones(this.usuario.numeroId, notis);
+        db.guardarNotificaciones(this.usuario.numeroId, notis);
         return notis;
     }
 
@@ -117,11 +120,11 @@ class AcmeNotificaciones extends HTMLElement {
             btn.addEventListener('click', () => { this.filtro = btn.dataset.filtro; this.render(); });
         });
         this.querySelectorAll('.btn-marcar-leida').forEach(btn => {
-            btn.addEventListener('click', () => { window.db.marcarNotificacionLeida(this.usuario.numeroId, btn.dataset.id); this.render(); });
+            btn.addEventListener('click', () => { db.marcarNotificacionLeida(this.usuario.numeroId, btn.dataset.id); this.render(); });
         });
         const btnTodas = this.querySelector('#btn-marcar-todas');
         if (btnTodas) {
-            btnTodas.addEventListener('click', () => { window.db.marcarTodasLeidas(this.usuario.numeroId); this.render(); });
+            btnTodas.addEventListener('click', () => { db.marcarTodasLeidas(this.usuario.numeroId); this.render(); });
         }
     }
 }
