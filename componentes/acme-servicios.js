@@ -74,7 +74,7 @@ class AcmeServicios extends HTMLElement {
     consultarFactura(empresa, referencia) {
         // Simular un tiempo de consulta (loading)
         const panelFactura = this.querySelector('#panel-factura');
-        panelFactura.innerHTML = \`<div class="blinking-cursor">Consultando base de datos de \${empresa}...</div>\`;
+        panelFactura.innerHTML = `<div class="blinking-cursor">Consultando base de datos de ${empresa}...</div>`;
 
         setTimeout(() => {
             // Generar un monto aleatorio entre $20,000 y $250,000
@@ -97,15 +97,15 @@ class AcmeServicios extends HTMLElement {
         if (!this.facturaConsultada) return;
         const panelFactura = this.querySelector('#panel-factura');
 
-        panelFactura.innerHTML = \`
+        panelFactura.innerHTML = `
             <h3 style="margin-bottom: 0.5rem; color: var(--primary-color);">Factura Encontrada</h3>
-            <p><strong>Empresa:</strong> \${this.facturaConsultada.empresa}</p>
-            <p><strong>Referencia:</strong> \${this.facturaConsultada.referencia}</p>
-            <p><strong>Vence:</strong> \${this.facturaConsultada.vencimiento}</p>
-            <h2 style="margin: 1rem 0; font-size: 2.2rem;">$\${this.facturaConsultada.monto.toLocaleString()}</h2>
-            <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 1rem;">Saldo disponible: $\${this.cuenta.saldo.toLocaleString()}</p>
+            <p><strong>Empresa:</strong> ${this.facturaConsultada.empresa}</p>
+            <p><strong>Referencia:</strong> ${this.facturaConsultada.referencia}</p>
+            <p><strong>Vence:</strong> ${this.facturaConsultada.vencimiento}</p>
+            <h2 style="margin: 1rem 0; font-size: 2.2rem;">$${this.facturaConsultada.monto.toLocaleString()}</h2>
+            <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 1rem;">Saldo disponible: $${this.cuenta.saldo.toLocaleString()}</p>
             <button class="btn btn-primary" id="btn-pagar-factura">Pagar Factura</button>
-        \`;
+        `;
 
         this.querySelector('#btn-pagar-factura').addEventListener('click', () => this.pagarFactura());
     }
@@ -125,7 +125,7 @@ class AcmeServicios extends HTMLElement {
                 numeroCuenta: this.cuenta.numeroCuenta,
                 tipo: 'Retiro',
                 monto: monto,
-                concepto: \`Pago de servicio \${this.facturaConsultada.empresa} - Ref: \${this.facturaConsultada.referencia}\`
+                concepto: `Pago de servicio ${this.facturaConsultada.empresa} - Ref: ${this.facturaConsultada.referencia}`
             });
 
             this.cuenta = db.obtenerCuentaPorUsuario(this.usuario.numeroId);
@@ -137,7 +137,7 @@ class AcmeServicios extends HTMLElement {
             this.querySelector('#select-empresa').value = '';
             this.querySelector('#input-referencia').value = '';
             const panelFactura = this.querySelector('#panel-factura');
-            panelFactura.innerHTML = \`<div style="color: var(--success-color); font-weight: bold; font-size: 1.2rem;">✓ Factura Pagada</div>\`;
+            panelFactura.innerHTML = `<div style="color: var(--success-color); font-weight: bold; font-size: 1.2rem;">✓ Factura Pagada</div>`;
             
         } catch (error) {
             this.mostrarMensaje(error.message, true);
@@ -146,7 +146,7 @@ class AcmeServicios extends HTMLElement {
 
     mostrarMensaje(msg, esError = false) {
         const div = this.querySelector('#msg-servicios');
-        div.innerHTML = \`<div class="alert \${esError ? 'alert-danger' : 'alert-success'}">\${msg}</div>\`;
+        div.innerHTML = `<div class="alert ${esError ? 'alert-danger' : 'alert-success'}">${msg}</div>`;
         setTimeout(() => { div.innerHTML = ''; }, 5000);
     }
 }

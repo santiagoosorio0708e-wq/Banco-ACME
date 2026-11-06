@@ -13,7 +13,7 @@ fs.writeFileSync(path.join(dirJs, 'base-datos.js'), dbContent);
 
 // 2. Refactor autenticacion.js
 let authContent = fs.readFileSync(path.join(dirJs, 'autenticacion.js'), 'utf8');
-authContent = authContent.replace(/window\.auth = new Autenticacion\(\);/, 'export const auth = new Autenticacion();');
+authContent = authContent.replace(/window\.auth = new (Autenticacion|ServicioAutenticacion)\(\);/, 'export const auth = new ServicioAutenticacion();\nwindow.auth = auth;');
 authContent = authContent.replace(/window\.db/g, 'db');
 authContent = `import { db } from './base-datos.js';\n` + authContent;
 fs.writeFileSync(path.join(dirJs, 'autenticacion.js'), authContent);

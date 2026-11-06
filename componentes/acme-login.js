@@ -39,6 +39,11 @@ class AcmeLogin extends HTMLElement {
                             <a href="#register">Crear cuenta</a> |
                             <a href="#recovery">Recordar contraseña</a>
                         </div>
+                        <div class="mt-3 p-2 text-center" style="font-size: 0.8rem; background: var(--secondary-color); border-radius: 6px; border: 1px dashed var(--border-color); color: var(--text-light);">
+                            <strong>Credenciales de prueba:</strong><br>
+                            Admin: CC <code>000000</code> / <code>admin123</code><br>
+                            Cliente: CC <code>12345678</code> / <code>cliente123</code>
+                        </div>
                     </div>
                 </div>
             </div>

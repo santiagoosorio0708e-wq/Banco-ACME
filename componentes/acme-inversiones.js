@@ -177,9 +177,9 @@ class AcmeInversiones extends HTMLElement {
         const cantidadAcm = monto / this.precioActual;
 
         if (tipo === 'buy') {
-            preview.textContent = \`Recibirás apróx: \${cantidadAcm.toFixed(6)} ACM\`;
+            preview.textContent = `Recibirás apróx: ${cantidadAcm.toFixed(6)} ACM`;
         } else {
-            preview.textContent = \`Venderás apróx: \${cantidadAcm.toFixed(6)} ACM\`;
+            preview.textContent = `Venderás apróx: ${cantidadAcm.toFixed(6)} ACM`;
         }
     }
 
@@ -199,7 +199,7 @@ class AcmeInversiones extends HTMLElement {
 
     mostrarMensaje(msg, esError = false) {
         const div = this.querySelector('#msg-operacion');
-        div.innerHTML = \`<div class="alert \${esError ? 'alert-danger' : 'alert-success'}">\${msg}</div>\`;
+        div.innerHTML = `<div class="alert ${esError ? 'alert-danger' : 'alert-success'}">${msg}</div>`;
         setTimeout(() => { div.innerHTML = ''; }, 4000);
     }
 
@@ -221,10 +221,10 @@ class AcmeInversiones extends HTMLElement {
                     numeroCuenta: this.cuenta.numeroCuenta,
                     tipo: 'Retiro',
                     monto: montoUsd,
-                    concepto: \`Compra de \${cantidadAcm.toFixed(4)} ACME Coin\`
+                    concepto: `Compra de ${cantidadAcm.toFixed(4)} ACME Coin`
                 });
 
-                this.mostrarMensaje(\`Compra exitosa de \${cantidadAcm.toFixed(4)} ACM.\`);
+                this.mostrarMensaje(`Compra exitosa de ${cantidadAcm.toFixed(4)} ACM.`);
 
             } else {
                 if (cantidadAcm > this.portafolio.acmecoin) {
@@ -238,10 +238,10 @@ class AcmeInversiones extends HTMLElement {
                     numeroCuenta: this.cuenta.numeroCuenta,
                     tipo: 'Consignación',
                     monto: montoUsd,
-                    concepto: \`Venta de \${cantidadAcm.toFixed(4)} ACME Coin\`
+                    concepto: `Venta de ${cantidadAcm.toFixed(4)} ACME Coin`
                 });
 
-                this.mostrarMensaje(\`Venta exitosa. +\$\${montoUsd.toLocaleString()}\`);
+                this.mostrarMensaje(`Venta exitosa. +$${montoUsd.toLocaleString()}`);
             }
 
             this.guardarPortafolio();

@@ -316,9 +316,12 @@ class AcmeTablero extends HTMLElement {
                         ${this.construirMenu()}
                     </ul>
 
-                    <div class="sidebar-footer">
-                        <button id="btn-cerrar-sesion" class="btn btn-danger" style="width:100%;font-size:0.88rem;padding:0.65rem;">
-                            Cerrar sesión
+                    <div class="sidebar-footer" style="text-align: center;">
+                        <div style="font-size: 0.76rem; color: rgba(255,255,255,0.85); margin-bottom: 0.45rem; font-weight: 600;">
+                            🟢 Modelo de Prueba Abierto
+                        </div>
+                        <button id="btn-cerrar-sesion" class="btn btn-outline" style="width:100%;font-size:0.8rem;padding:0.45rem;color:white;border-color:rgba(255,255,255,0.4);">
+                            Reiniciar saldo / demo
                         </button>
                     </div>
                 </nav>
@@ -368,8 +371,21 @@ class AcmeTablero extends HTMLElement {
         btnHam?.addEventListener('click', abrirMenu);
         overlay?.addEventListener('click', cerrarMenu);
 
-        /* Cerrar sesión */
-        this.querySelector('#btn-cerrar-sesion')?.addEventListener('click', () => auth.cerrarSesion());
+        /* Reiniciar saldo de prueba / demo */
+        this.querySelector('#btn-cerrar-sesion')?.addEventListener('click', () => {
+            const cuenta = db.obtenerCuentaPorUsuario(this.usuario.numeroId);
+            if (cuenta) {
+                const cuentas = db.obtenerCuentas();
+                const idx = cuentas.findIndex(c => c.numeroCuenta === cuenta.numeroCuenta);
+                if (idx !== -1) {
+                    cuentas[idx].saldo = 15000000;
+                    cuentas[idx].tarjetaBloqueada = false;
+                    localStorage.setItem('acmeAccounts', JSON.stringify(cuentas));
+                }
+            }
+            alert('Saldo y estado de demostración reiniciados con éxito ($15.000.000 COP).');
+            this.cambiarVista('tx-summary');
+        });
 
         /* Ítems de menú */
         this.querySelectorAll('a[data-view]').forEach(a => {

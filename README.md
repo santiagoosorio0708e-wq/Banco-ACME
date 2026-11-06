@@ -1,81 +1,212 @@
-# Banco Acme - Portal Transaccional
+<a name="readme-top"></a>
 
-Este proyecto es una aplicación web responsiva, segura y funcional que simula un portal bancario para el "Banco Acme". Está construido íntegramente con tecnologías web estándar (Vanilla JavaScript, HTML5 y CSS3), sin el uso de frameworks pesados, con un enfoque en la modularidad a través de Web Components.
+<div align="center">
 
-## Características Principales
+  <h1>🏦 BANCO ACME - PORTAL TRANSACCIONAL</h1>
+  <p><strong>Plataforma Bancaria Web Modular, Interactiva y de Demostración Continua</strong></p>
 
-*   **Single Page Application (SPA):** Navegación fluida y dinámica sin recargar la página.
-*   **Autenticación de Usuarios y Roles:** Sistema completo de registro, inicio de sesión (con soporte para administrador y usuario estándar) y recuperación de contraseñas.
-*   **Gestión de Cuentas y Tarjetas:** Visualización de saldo actual, número de cuenta y administración integral de tarjetas de crédito/débito.
-*   **Transacciones y Transferencias:** Permite realizar depósitos, retiros, pagos de servicios, y transferencias monetarias a terceros con validaciones de fondos en tiempo real.
-*   **Herramientas Financieras:** Incluye un simulador financiero interactivo, gestión de presupuestos personales, bolsillos de ahorro y flujos de solicitud de préstamos.
-*   **Soporte y Notificaciones:** Sistema integrado de soporte al cliente, notificaciones de cuenta en tiempo real y panel de administración integral.
-*   **Generación de Certificados:** Emisión de certificaciones bancarias descargables/imprimibles y gestión intuitiva del perfil del usuario.
-*   **Persistencia de Datos Local:** Utiliza la API de `localStorage` del navegador para simular una base de datos de manera altamente eficiente (usuarios, cuentas, transacciones presupuestos, etc).
-*   **Diseño Web Moderno:** Interfaz de usuario profesional basada en CSS puro con tipografía "Inter", diseño adaptable (responsive) para dispositivos móviles y animaciones fluidas.
+  <!-- Badges / Insignias Dinámicas -->
+  <p>
+    <a href="https://github.com/santiagoosorio0708e-wq/Banco-ACME"><img src="https://img.shields.io/github/stars/santiagoosorio0708e-wq/Banco-ACME?style=for-the-badge&logo=github&color=0052cc" alt="Stars" /></a>
+    <a href="https://github.com/santiagoosorio0708e-wq/Banco-ACME"><img src="https://img.shields.io/github/forks/santiagoosorio0708e-wq/Banco-ACME?style=for-the-badge&logo=github&color=172b4d" alt="Forks" /></a>
+    <a href="https://github.com/santiagoosorio0708e-wq/Banco-ACME/issues"><img src="https://img.shields.io/github/issues/santiagoosorio0708e-wq/Banco-ACME?style=for-the-badge&logo=github&color=ff5630" alt="Issues" /></a>
+    <a href="https://github.com/santiagoosorio0708e-wq/Banco-ACME/blob/main/LICENSE"><img src="https://img.shields.io/badge/Licencia-MIT-green.svg?style=for-the-badge" alt="Licencia" /></a>
+    <img src="https://img.shields.io/badge/JavaScript-ES6%2B-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript" />
+    <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5" />
+    <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
+    <img src="https://img.shields.io/badge/Web_Components-Custom_Elements-blueviolet?style=for-the-badge" alt="Web Components" />
+  </p>
+</div>
 
-##  Estructura del Proyecto
+<br />
 
-El código está organizado de manera modular y escalable:
+<details>
+  <summary><strong> Tabla de Contenidos (Clic para desplegar)</strong></summary>
+  <ol>
+    <li><a href="#acerca-del-proyecto">Acerca del Proyecto</a></li>
+    <li><a href="#construido-con">Construido con</a></li>
+    <li><a href="#arquitectura-del-sistema">Arquitectura del Sistema</a></li>
+    <li><a href="#prerrequisitos">Prerrequisitos</a></li>
+    <li><a href="#instalación">Instalación</a></li>
+    <li><a href="#uso-y-características">Uso y Características</a></li>
+    <li><a href="#pruebas">Pruebas</a></li>
+    <li><a href="#hoja-de-ruta">Hoja de Ruta (Roadmap)</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ol>
+</details>
+
+<br />
+
+---
+
+## 📌 Acerca del Proyecto
+
+**Banco Acme** es una aplicación web SPA (Single Page Application) responsiva que recrea un portal transaccional de autogestión bancaria completo. Desarrollada con estándares web modernos nativos, prescinde de frameworks pesados para brindar alto rendimiento, modularidad e interactividad mediante **Web Components autónomos**.
+
+> [!NOTE]
+> **Modo Modelo de Prueba Abierto:** Para facilitar la evaluación interactiva de todas las funcionalidades, el portal se encuentra configurado en **modo de prueba abierto**, permitiendo acceso inmediato al tablero financiero sin requerir credenciales ni contraseñas, cargado con saldos, tarjetas y movimientos de prueba preconfigurados.
+
+<p align="right">(<a href="#readme-top">Volver al inicio ⬆</a>)</p>
+
+---
+
+## 🛠 Construido con
+
+* **JavaScript ES6+ (Módulos & Custom Elements):** Arquitectura desacoplada y orientada a componentes.
+* **HTML5 Semántico:** Estructura accesible y optimizada.
+* **CSS3 Moderno:** Variables nativas, glassmorphism y diseño responsive sin dependencias de frameworks CSS.
+* **Chart.js:** Gráficos estadísticos y seguimiento en tiempo real para cotizaciones y criptoactivos.
+* **Web Storage API (`localStorage` & `sessionStorage`):** Capa de persistencia local resiliente ante reinicios.
+
+<p align="right">(<a href="#readme-top">Volver al inicio ⬆</a>)</p>
+
+---
+
+## 🏛 Arquitectura del Sistema
+
+El proyecto sigue una estructura limpia, modular y jerárquica:
 
 ```text
-proyecto portal transaccional/
+Banco-ACME/
 │
-├── index.html               # Punto de entrada de la aplicación. Carga todos los scripts, componentes y estilos.
-├── README.md                # Archivo de documentación (este archivo).
+├── index.html                  # Punto de entrada HTML5 del portal
+├── README.md                   # Documentación técnica completa
+├── refactor.js                 # Script utilitario de migración modular
 │
-├── css/
-│   └── styles.css           # Archivo principal de estilos CSS con variables (Custom Properties) para consistencia de diseño.
+├── css/                        # Estilos modulares y temas
+│   ├── base.css                # Reset y estilos elementales
+│   ├── components.css          # Estilos de botones, tarjetas y alertas
+│   ├── forms.css               # Controles de formulario e inputs
+│   ├── layout.css              # Grid, contenedores y layouts
+│   ├── styles.css              # Hoja principal consolidadora
+│   ├── typography.css          # Tipografías y fuentes
+│   └── variables.css           # Paleta de colores e identidades
 │
-├── js/
-│   ├── base-datos.js        # Simula un motor de base de datos interceptando llamadas al 'localStorage'.
-│   ├── autenticacion.js     # Contiene la lógica de negocio para la gestión de sesiones (login, logout, validación).
-│   └── principal.js         # Orquestador principal de la app. Gestiona el enrutamiento y muestra el componente correcto en el DOM.
+├── js/                         # Núcleo y lógica de negocio
+│   ├── base-datos.js           # Motor de persistencia en localStorage
+│   ├── autenticacion.js        # Servicio de sesión y tokens de seguridad
+│   └── principal.js            # Orquestador del ciclo de vida y renderizado
 │
-└── componentes/             # Directorio que contiene todos los Web Components personalizados.
-    ├── acme-admin.js        # Panel de administración para gestionar usuarios y el sistema.
-    ├── acme-bolsillos.js    # Componente para gestionar objetivos y bolsillos de ahorro.
-    ├── acme-certificado.js  # Componente para visualizar y generar certificados bancarios.
-    ├── acme-login.js        # Componente para el formulario de inicio de sesión.
-    ├── acme-notificaciones.js # Sistema para visualizar y gestionar notificaciones al usuario.
-    ├── acme-perfil.js       # Componente para la gestión detallada del perfil del usuario.
-    ├── acme-prestamo.js     # Componente para simular y solicitar préstamos bancarios.
-    ├── acme-presupuesto.js  # Herramienta para la gestión y seguimiento del presupuesto personal.
-    ├── acme-recuperacion.js # Componente para la recuperación y cambio de contraseñas.
-    ├── acme-registro.js     # Componente para la creación de nuevos usuarios y cuentas asociadas.
-    ├── acme-resumen.js      # Componente que muestra un resumen de la cuenta (saldo, movimientos recientes).
-    ├── acme-simulador.js    # Simulador intuitivo de inversiones y préstamos.
-    ├── acme-soporte.js      # Componente para radicar quejas, reclamos y obtener soporte al cliente.
-    ├── acme-tablero.js      # Componente contenedor post-login principal (Dashboard lateral/superior).
-    ├── acme-tarjeta.js      # Gestión de tarjetas de crédito y débito del usuario.
-    ├── acme-transaccion.js  # Componente con formularios de caja para depósitos, retiros y pagos.
-    └── acme-transferencia.js # Componente para efectuar transferencias de dinero a terceros.
+├── imagenes/                   # Activos gráficos
+│   └── logo.png                # Identidad visual de Banco Acme
+│
+└── componentes/                # Catálogo de Web Components nativos
+    ├── acme-admin.js           # Panel de administración de créditos y PQRs
+    ├── acme-bolsillos.js       # Gestión de bolsillos de ahorro
+    ├── acme-cajero.js          # Cajero automático interactivo (ATM)
+    ├── acme-certificado.js     # Generación de certificaciones bancarias
+    ├── acme-inversiones.js     # Módulo de Trading y Cripto (ACME Coin)
+    ├── acme-login.js           # Componente de autenticación
+    ├── acme-notificaciones.js  # Centro de alertas y avisos
+    ├── acme-perfil.js          # Gestión de datos del titular
+    ├── acme-prestamo.js        # Solicitud y radicación de préstamos
+    ├── acme-presupuesto.js     # Planeación y presupuestos personales
+    ├── acme-recuperacion.js    # Flujo de restablecimiento de contraseña
+    ├── acme-registro.js        # Registro de usuarios y apertura de cuentas
+    ├── acme-reporte.js         # Reporte de saldos de cuentas activas
+    ├── acme-resumen.js         # Resumen general de saldos y movimientos
+    ├── acme-servicios.js       # Consulta y pago de facturas de servicios
+    ├── acme-simulador.js       # Simulador interactivo de créditos
+    ├── acme-soporte.js         # Radicación de PQRs y atención al cliente
+    ├── acme-tablero.js         # Dashboard principal y barra de navegación
+    ├── acme-tarjeta.js         # Administración de tarjeta débito virtual
+    ├── acme-transaccion.js     # Consignaciones, retiros y pagos
+    └── acme-transferencia.js   # Transferencias interbancarias
 ```
 
-## ¿Cómo funciona a nivel de código?
+<p align="right">(<a href="#readme-top">Volver al inicio ⬆</a>)</p>
 
-El desarrollo de este portal se basa en tres pilares arquitectónicos:
+---
 
-### 1. Web Components (Componentes Web)
-La interfaz de usuario está construida usando **Custom Elements** (Elementos Personalizados). Cada archivo en la carpeta `componentes/` define una clase de JavaScript que hereda de `HTMLElement`. Esto permite encapsular el HTML, CSS (en línea o referido) y lógica de presentación, creando etiquetas HTML nuevas y reutilizables (por ejemplo, `<acme-login></acme-login>`).
+##  Prerrequisitos
 
-### 2. Base de Datos Virtual (`js/base-datos.js`)
-Para evitar la necesidad de un servidor y una base de datos real (backend), el proyecto maneja el estado de la información a través de la API `Window.localStorage`. 
-La clase `Database` se instancia de manera global (`window.db = new Database();`) y provee métodos estructurales para:
-- Crear y buscar usuarios en la clave `acmeUsers`.
-- Crear y actualizar cuentas (saldos) en la clave `acmeAccounts`.
-- Guardar el historial de movimientos en la clave `acmeTransactions`.
+Para ejecutar la aplicación localmente solo necesitas:
 
-### 3. Enrutamiento y Estado (`js/principal.js` y `js/autenticacion.js`)
-El archivo `index.html` contiene un contenedor vacío: `<div id="app-container"></div>`.
-El script `principal.js` escucha eventos personalizados (Custom Events) emitidos por los componentes. Dependiendo de si un usuario ha iniciado sesión (validado por `autenticacion.js`) y de la "ruta" seleccionada, `principal.js` vacía el `app-container` e inyecta dinámicamente el componente Web correspondiente para renderizar la pantalla correcta.
+* Un navegador web moderno (Google Chrome, Microsoft Edge, Mozilla Firefox, Brave, Safari).
+* Un servidor web estático local (como la extensión **Live Server** de VS Code, o `npx serve`, o `python -m http.server`).
 
-##  ¿Cómo ejecutar el proyecto?
+<p align="right">(<a href="#readme-top">Volver al inicio ⬆</a>)</p>
 
-Dado que está construido con tecnologías puramente del lado del cliente y no se utilizan módulos estandarizados restrictivos (ES modules con `type="module"`), ejecutar la aplicación es sumamente sencillo:
+---
 
-1.  Descarga o clona este directorio en tu máquina local.
-2.  Abre el archivo `index.html` directamente en cualquier navegador web moderno (Google Chrome, Mozilla Firefox, Microsoft Edge, Safari).
-3.  *Opcional pero recomendado:* Si usas un editor como Visual Studio Code, puedes utilizar la extensión **Live Server** para abrir el proyecto, lo que facilita el refresco automático si haces cambios en el código.
+## 🚀 Instalación
 
-**Notas Importantes:** Al estar la información almacenada en el `localStorage` del navegador, ten en cuenta que los datos creados (nuevos usuarios, saldos, etc.) se perderán si navegas en modo incógnito o si borras la caché o datos del navegador.
+1. **Clonar el repositorio:**
+   ```bash
+   git clone https://github.com/santiagoosorio0708e-wq/Banco-ACME.git
+   ```
+
+2. **Acceder al directorio:**
+   ```bash
+   cd Banco-ACME
+   ```
+
+3. **Iniciar el servidor local:**
+   * **Con VS Code:** Haz clic derecho en `index.html` y selecciona **"Open with Live Server"**.
+   * **Con Node.js:**
+     ```bash
+     npx serve .
+     ```
+   * **Con Python:**
+     ```bash
+     python -m http.server 5500
+     ```
+
+4. **Abrir en el navegador:**
+   Ingresa a `http://localhost:5500` o `http://127.0.0.1:5500/index.html`.
+
+<p align="right">(<a href="#readme-top">Volver al inicio ⬆</a>)</p>
+
+---
+
+## 💻 Uso y Características
+
+* **Resumen en Tiempo Real:** Visualización de saldo, movimientos recientes y conversión TRM en vivo.
+* **Tarjeta Virtual:** Consulta de número de tarjeta, CVV, estado de bloqueo y pagos seguros.
+* **Cajero Automático (ATM):** Teclado numérico físico interactivo, dispensación visual de billetes y validación de saldo.
+* **Trading & Criptomonedas:** Gráfico dinámico de precios y compra/venta de **ACME Coin**.
+* **Gestión de Ahorro y Bolsillos:** Creación de metas de ahorro independientes de la cuenta corriente.
+* **Pago de Servicios Públicos:** Consulta simulada de facturas y deducción en línea.
+* **Panel Administrativo & Reportes:** Aprobación o rechazo de solicitudes de crédito, gestión de PQRs e impresión de reportes de saldos.
+* **Botón de Reinicio Rápido:** En la barra lateral se incluye la opción de restaurar los saldos y transacciones demo con un solo clic.
+
+<p align="right">(<a href="#readme-top">Volver al inicio ⬆</a>)</p>
+
+---
+
+## 🧪 Pruebas
+
+Para verificar la integridad sintáctica y la correcta resolución de dependencias modulares con Node.js:
+
+```bash
+# Comprobación de sintaxis en todos los módulos y componentes
+node -e "const fs = require('fs'), { execSync } = require('child_process'); const files = ['./js/base-datos.js', './js/autenticacion.js', './js/principal.js', ...fs.readdirSync('./componentes').map(f => './componentes/' + f)]; files.forEach(f => execSync('node --check ' + f)); console.log('¡Todos los archivos pasaron la validación de sintaxis!');"
+```
+
+<p align="right">(<a href="#readme-top">Volver al inicio ⬆</a>)</p>
+
+---
+
+## 🗺 Hoja de Ruta (Roadmap)
+
+- [x] Arquitectura basada en Web Components autónomos
+- [x] Persistencia de datos en `localStorage` con tolerancia a fallos
+- [x] Módulo interactivo de Cajero Automático (ATM)
+- [x] Simulador de Trading & Criptoactivos con gráficos
+- [x] Soporte para modo de prueba abierto sin fricción de credenciales
+- [ ] Exportación de extractos bancarios en formato PDF nativo
+- [ ] Modo oscuro / claro configurable por el usuario
+- [ ] Soporte multimoneda (USD / EUR / COP)
+
+<p align="right">(<a href="#readme-top">Volver al inicio ⬆</a>)</p>
+
+---
+
+## 📬 Contacto
+
+**Santiago Osorio** - Desarrollador del Proyecto
+
+* **Repositorio:** [https://github.com/santiagoosorio0708e-wq/Banco-ACME](https://github.com/santiagoosorio0708e-wq/Banco-ACME)
+* **Organización:** Banco Acme - Portal Transaccional
+
+<p align="right">(<a href="#readme-top">Volver al inicio ⬆</a>)</p>

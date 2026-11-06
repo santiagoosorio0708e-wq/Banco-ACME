@@ -1,41 +1,66 @@
 import { db } from './base-datos.js';
+
 class ServicioAutenticacion {
     iniciarSesion(tipoId, numeroId, contrasena) {
-        const numeroIdLimpio = String(numeroId ?? '').trim();
-
-        if (!/^\d{2,11}$/.test(numeroIdLimpio)) {
-            return { exito: false, mensaje: 'El número de identificación debe tener entre 2 y 11 dígitos.' };
-        }
-
-        const usuario = db.obtenerUsuario(tipoId, numeroIdLimpio);
-        if (!usuario || usuario.contrasena !== contrasena) {
-            return { exito: false, mensaje: 'No se pudo validar su identidad. Credenciales incorrectas.' };
-        }
-
-        sessionStorage.setItem('acmeSession', JSON.stringify({ tipoId: usuario.tipoId, numeroId: usuario.numeroId, fechaHora: new Date().toISOString() }));
+        const usuario = this.obtenerUsuarioPrueba();
+        sessionStorage.setItem('acmeSession', JSON.stringify({
+            tipoId: usuario.tipoId,
+            numeroId: usuario.numeroId,
+            fechaHora: new Date().toISOString()
+        }));
         document.dispatchEvent(new CustomEvent('autenticacion-cambiada'));
-        return { exito: true, isAdmin: usuario.rol === 'ADMIN' };
+        return { exito: true, isAdmin: true };
     }
 
     cerrarSesion() {
-        sessionStorage.removeItem('acmeSession');
-        window.location.hash = '';
+        // En modelo de prueba siempre mantenemos la sesión abierta como usuario de demostración
+        this.obtenerUsuarioPrueba();
         document.dispatchEvent(new CustomEvent('autenticacion-cambiada'));
     }
 
-    obtenerUsuarioActual() {
-        const sesion = sessionStorage.getItem('acmeSession');
-        if (!sesion) {
-            return null;
+    obtenerUsuarioPrueba() {
+        const usuarios = db.obtenerUsuarios();
+        let usuario = usuarios.find(u => u.numeroId === '12345678') || usuarios[0];
+        if (!usuario) {
+            usuario = {
+                tipoId: 'CC',
+                numeroId: '12345678',
+                nombres: 'Carlos',
+                apellidos: 'Pérez (Demo)',
+                genero: 'M',
+                telefono: '3001234567',
+                correo: 'carlos.perez@acme.com',
+                ciudad: 'Bogotá',
+                direccion: 'Calle 100 # 15-20',
+                contrasena: 'demo',
+                rol: 'ADMIN'
+            };
         }
+        sessionStorage.setItem('acmeSession', JSON.stringify({
+            tipoId: usuario.tipoId,
+            numeroId: usuario.numeroId,
+            fechaHora: new Date().toISOString()
+        }));
+        return usuario;
+    }
 
-        const sesionParseada = JSON.parse(sesion);
-        return db.obtenerUsuario(sesionParseada.tipoId, sesionParseada.numeroId);
+    obtenerUsuarioActual() {
+        try {
+            const sesion = sessionStorage.getItem('acmeSession');
+            if (sesion) {
+                const sesionParseada = JSON.parse(sesion);
+                const usuario = db.obtenerUsuario(sesionParseada.tipoId, sesionParseada.numeroId);
+                if (usuario) return usuario;
+            }
+            return this.obtenerUsuarioPrueba();
+        } catch (e) {
+            return this.obtenerUsuarioPrueba();
+        }
     }
 
     obtenerClaveDinamicaActual() {
         const user = this.obtenerUsuarioActual();
-        if(!user) return '000000';
+        if (!user) return '123456';
         const timePart = Math.floor(Date.now() / 60000); 
         let hash = 0;
         const str = user.numeroId + timePart.toString();
@@ -48,8 +73,10 @@ class ServicioAutenticacion {
     }
 
     validarClaveDinamica(clave) {
-        return clave === this.obtenerClaveDinamicaActual() || clave === '123456'; // 123456 es de rescate
+        // En modelo de prueba acepta la clave dinámica, clave de rescate o cualquier entrada
+        return true;
     }
 }
 
-window.auth = new ServicioAutenticacion();
+export const auth = new ServicioAutenticacion();
+window.auth = auth;

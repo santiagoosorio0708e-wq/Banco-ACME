@@ -11,6 +11,16 @@ class BaseDatos {
     /* ─────────────────────────────────────────
        INICIALIZACIÓN
     ───────────────────────────────────────── */
+    _obtenerColeccion(clave) {
+        try {
+            const raw = localStorage.getItem(clave);
+            return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+            console.error(`Error al leer colección ${clave}:`, e);
+            return [];
+        }
+    }
+
     inicializar() {
         const colecciones = [
             'acmeUsers', 'acmeAccounts', 'acmeTransactions',
@@ -22,14 +32,85 @@ class BaseDatos {
             }
         });
         
-        const usuarios = JSON.parse(localStorage.getItem('acmeUsers'));
+        const usuarios = this._obtenerColeccion('acmeUsers');
+        let usuariosModificados = false;
+
+        // Usuario Administrador por defecto
         if (!usuarios.find(u => u.numeroId === '000000')) {
             usuarios.push({
                 tipoId: 'CC', numeroId: '000000', nombres: 'Administrador', apellidos: 'Sistema',
                 genero: 'O', telefono: '0000000', correo: 'admin@acme.com', ciudad: 'Sede Central',
                 direccion: 'N/A', contrasena: 'admin123', rol: 'ADMIN'
             });
+            usuariosModificados = true;
+        }
+
+        // Usuario de demostración para Modelo de Prueba
+        const idxCarlos = usuarios.findIndex(u => u.numeroId === '12345678');
+        if (idxCarlos === -1) {
+            usuarios.push({
+                tipoId: 'CC', numeroId: '12345678', nombres: 'Carlos', apellidos: 'Pérez (Demo)',
+                genero: 'M', telefono: '3001234567', correo: 'carlos.perez@acme.com', ciudad: 'Bogotá',
+                direccion: 'Calle 100 # 15-20', contrasena: 'demo', rol: 'ADMIN'
+            });
+            usuariosModificados = true;
+        } else if (usuarios[idxCarlos].rol !== 'ADMIN') {
+            usuarios[idxCarlos].rol = 'ADMIN';
+            usuariosModificados = true;
+        }
+
+        if (usuariosModificados) {
             localStorage.setItem('acmeUsers', JSON.stringify(usuarios));
+        }
+
+        // Asegurar que las cuentas para los usuarios iniciales existan
+        const cuentas = this._obtenerColeccion('acmeAccounts');
+        let cuentasModificadas = false;
+
+        if (!cuentas.find(c => c.usuarioId === '000000')) {
+            cuentas.push({
+                numeroCuenta: '1000000000',
+                usuarioId: '000000',
+                saldo: 50000000.0,
+                fechaCreacion: new Date().toISOString(),
+                tarjetaBloqueada: false,
+                numeroTarjetaVirtual: '4000123456789010'
+            });
+            cuentasModificadas = true;
+        }
+
+        const cuentaCarlos = cuentas.find(c => c.usuarioId === '12345678');
+        if (!cuentaCarlos) {
+            cuentas.push({
+                numeroCuenta: '1000000001',
+                usuarioId: '12345678',
+                saldo: 15000000.0,
+                fechaCreacion: new Date().toISOString(),
+                tarjetaBloqueada: false,
+                numeroTarjetaVirtual: '4000876543210987'
+            });
+            cuentasModificadas = true;
+        } else if (cuentaCarlos.saldo === 0) {
+            cuentaCarlos.saldo = 15000000.0;
+            cuentasModificadas = true;
+        }
+
+        if (cuentasModificadas) {
+            localStorage.setItem('acmeAccounts', JSON.stringify(cuentas));
+        }
+
+        // Transacción inicial de prueba si no existen transacciones
+        const txs = this._obtenerColeccion('acmeTransactions');
+        if (txs.length === 0) {
+            txs.push({
+                numeroCuenta: '1000000001',
+                tipo: 'Consignación',
+                monto: 15000000,
+                concepto: 'Abono inicial de demostración - Banco Acme',
+                referencia: 'REF-DEMO01',
+                fecha: new Date().toISOString()
+            });
+            localStorage.setItem('acmeTransactions', JSON.stringify(txs));
         }
 
         this.migrarTarjetasVirtuales();
@@ -39,7 +120,7 @@ class BaseDatos {
        USUARIOS
     ───────────────────────────────────────── */
     obtenerUsuarios() {
-        return JSON.parse(localStorage.getItem('acmeUsers')) || [];
+        return this._obtenerColeccion('acmeUsers');
     }
 
     obtenerUsuario(tipoId, numeroId) {
@@ -81,11 +162,16 @@ class BaseDatos {
        CUENTAS
     ───────────────────────────────────────── */
     obtenerCuentas() {
-        return JSON.parse(localStorage.getItem('acmeAccounts')) || [];
+        return this._obtenerColeccion('acmeAccounts');
     }
 
     obtenerCuentaPorUsuario(numeroIdUsuario) {
-        return this.obtenerCuentas().find(c => c.usuarioId === numeroIdUsuario) || null;
+        if (!numeroIdUsuario) return null;
+        let cuenta = this.obtenerCuentas().find(c => c.usuarioId === numeroIdUsuario);
+        if (!cuenta) {
+            cuenta = this.crearCuenta(numeroIdUsuario);
+        }
+        return cuenta;
     }
 
     obtenerCuentaPorNumero(numeroCuenta) {
@@ -181,14 +267,14 @@ class BaseDatos {
        TRANSACCIONES
     ───────────────────────────────────────── */
     obtenerTransaccionesPorCuenta(numeroCuenta) {
-        const txs = JSON.parse(localStorage.getItem('acmeTransactions')) || [];
+        const txs = this._obtenerColeccion('acmeTransactions');
         return txs
             .filter(t => t.numeroCuenta === numeroCuenta)
             .sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
     }
 
     crearTransaccion(transaccion) {
-        const txs = JSON.parse(localStorage.getItem('acmeTransactions')) || [];
+        const txs = this._obtenerColeccion('acmeTransactions');
         const nueva = {
             ...transaccion,
             referencia: `REF${Math.floor(100000 + Math.random() * 900000)}`,
@@ -203,7 +289,7 @@ class BaseDatos {
        PRÉSTAMOS / CRÉDITOS
     ───────────────────────────────────────── */
     obtenerPrestamos() {
-        return JSON.parse(localStorage.getItem('acmePrestamos')) || [];
+        return this._obtenerColeccion('acmePrestamos');
     }
 
     obtenerTodosLosPrestamos() {
@@ -255,7 +341,7 @@ class BaseDatos {
        PQR — Peticiones, Quejas y Reclamos
     ───────────────────────────────────────── */
     obtenerPQRs() {
-        return JSON.parse(localStorage.getItem('acmePQRs')) || [];
+        return this._obtenerColeccion('acmePQRs');
     }
 
     obtenerTodosLosPQRs() {
@@ -458,4 +544,5 @@ class BaseDatos {
 }
 
 export const db = new BaseDatos();
+window.db = db;
 db.migrarDatos();
